@@ -1,0 +1,24 @@
+use crate::{Expression, Variable, Abstraction, Application};
+
+grammar;
+
+pub Expression: Expression = {
+    AppTerm => <>,
+    "\\" <id:Id> "." <term:Expression> => {
+        Expression::Abs(Abstraction(id, box term))
+    },
+}
+
+AppTerm: Expression = {
+    ATerm => <>,
+    <e1:AppTerm> <e2:ATerm> => {
+        Expression::App(Application(box e1, box e2))
+    },
+}
+
+ATerm: Expression = {
+    Id => Expression::Var(<>),
+    "(" <e:Expression> ")" => e,
+}
+
+pub Id: Variable = r"[a-zA-Z0-9]+" => Variable(<>.to_string());
