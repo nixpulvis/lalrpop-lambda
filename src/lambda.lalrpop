@@ -4,19 +4,22 @@ grammar;
 
 pub Expression: Expression = {
     AppTerm => <>,
+    AbsTerm => <>,
+}
+
+AbsTerm: Expression =
     "\\" <id:Id> "." <term:Expression> => {
         Expression::Abs(Abstraction(id, box term))
-    },
-}
+    };
 
 AppTerm: Expression = {
-    ATerm => <>,
-    <e1:AppTerm> <e2:ATerm> => {
+    Term => <>,
+    <e1:AppTerm> <e2:Term> => {
         Expression::App(Application(box e1, box e2))
-    },
+    }
 }
 
-ATerm: Expression = {
+Term: Expression = {
     Id => Expression::Var(<>),
     "(" <e:Expression> ")" => e,
 }
