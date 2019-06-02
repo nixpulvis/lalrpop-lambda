@@ -10,8 +10,8 @@ let unbound_y = parser.parse(r"\x.x y");
 let compose = parser.parse(r"\x.\y.x y"));
 
 // Make the Y combinator.
-let ω = parser.parse(r"\x. (x x)"));
-let Ω = parser.parse(r"\x. (x x) \x. (x x)")
-let W = parser.parse(r"\x. f x x");
-let Y = parser.parse(r"\f.(\x. f (x x)) (\x. f (x x))");
+let ω = parser.parse(r"λx.(x x)");
+let Ω = parser.parse(r"(λx.(x x)) (λx.(x x))");
+let W = parser.parse(r"λf.λx. f x x");
+let Y = parser.parse(r"λf.(λx.f (x x)) (λx.f (x x))");
 ```

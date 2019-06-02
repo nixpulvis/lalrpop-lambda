@@ -8,7 +8,7 @@ pub Expression: Expression = {
 }
 
 AbsTerm: Expression =
-    "\\" <id:Id> "." <term:Expression> => {
+    Lambda <id:Id> "." <term:Expression> => {
         Expression::Abs(Abstraction(id, box term))
     };
 
@@ -25,3 +25,8 @@ Term: Expression = {
 }
 
 pub Id: Variable = r"[a-zA-Z0-9]+" => Variable(<>.to_string());
+
+Lambda = {
+    "λ",
+    "\\",
+}
