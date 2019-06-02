@@ -1,7 +1,9 @@
 [package]
 name = "lalrpop-lambda"
+description = "A λ-calculus grammar writting with LALRPOP."
 version = "0.1.0"
 authors = ["Nathan Lilienthal <nathan@nixpulvis.com>"]
+license = "MIT"
 edition = "2018"
 build = "build.rs"
 
