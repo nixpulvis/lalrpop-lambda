@@ -6,12 +6,12 @@ extern crate lalrpop_util;
 use std::collections::HashSet;
 
 macro_rules! map(
-    { $($value:expr),+ } => {
+    { $($value:expr),* } => {
         {
             let mut m = ::std::collections::HashSet::new();
             $(
                 m.insert($value);
-            )+
+            )*
             m
         }
      };
@@ -203,5 +203,17 @@ mod tests {
                    parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap().normalize());
         // assert_eq!(parser.parse(r"\x.x").unwrap(),
         //            parser.parse(r"(\x. (x x)) (\x. (x x))").unwrap().normalize());
+    }
+
+    #[test]
+    fn free_variables() {
+        let parser = ExpressionParser::new();
+
+        assert_eq!(map! { Variable("x".into()) },
+                   parser.parse(r"x").unwrap().free_variables());
+        assert_eq!(map! { },
+                   parser.parse(r"λx.x").unwrap().free_variables());
+        assert_eq!(map! { Variable("x".into()), Variable("y".into()) },
+                   parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
     }
 }

@@ -21,14 +21,22 @@ fn main() {
     dbg!(&id.to_s());
 
     // Make the Y combinator.
-    let ω = parser.parse(r"λx.(x x)").unwrap();
-    dbg!(&ω.to_s());
-    let Ω = parser.parse(r"(λx.(x x)) (λx.(x x))").unwrap();
-    dbg!(&Ω.to_s());
-    let W = parser.parse(r"λf.λx. f x x").unwrap();
-    dbg!(&W.to_s());
-    let Y = parser.parse(r"λf.(λx.f (x x)) (λx.f (x x))").unwrap();
-    dbg!(&Y.to_s());
+    dbg!({
+        let ω = parser.parse(r"λx.(x x)").unwrap();
+        ω.to_s()
+    });
+    dbg!({
+        let Ω = parser.parse(r"(λx.(x x)) (λx.(x x))").unwrap();
+        &Ω.to_s()
+    });
+    dbg!({
+        let W = parser.parse(r"λf.λx. f x x").unwrap();
+        &W.to_s()
+    });
+    dbg!({
+        let Y = parser.parse(r"λf.(λx.f (x x)) (λx.f (x x))").unwrap();
+        &Y.to_s()
+    });
 
     let multi = parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap();
     dbg!(&multi.to_s());
@@ -37,8 +45,13 @@ fn main() {
     dbg!(parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap().normalize());
 
     println!("\n\n\n");
-    dbg!(parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap().free_variables());
+    dbg!(parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
 
     println!("\n\n\n");
     dbg!(parser.parse(r"\f.\x.(f (x x) f (x x)) y").unwrap().normalize().to_s());
+
+    dbg!(parser.parse(r"\x. f (x x)"));
+    dbg!(parser.parse(r"\x. f x x"));
+    dbg!(parser.parse(r"\f.(\x. f (x x)) (\x. f (x x))"));
+    dbg!(parser.parse(r"(\x. (x x)) (\x. (x x))"));
 }
