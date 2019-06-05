@@ -4,6 +4,7 @@
 extern crate lalrpop_util;
 
 use std::collections::HashSet;
+use std::fmt;
 
 macro_rules! map(
     { $($value:expr),* } => {
@@ -25,19 +26,6 @@ pub enum Expression {
 }
 
 impl Expression {
-    // TODO: Display trait.
-    pub fn to_s(&self) -> String {
-        match self {
-            Expression::Var(Variable(s)) => s.clone(),
-            Expression::Abs(Abstraction(Variable(id), body)) => {
-                format!("λ{}.{}", id, body.to_s())
-            },
-            Expression::App(Application(box e1, box e2)) => {
-                format!("({} {})", e1.to_s(), e2.to_s())
-            },
-        }
-    }
-
     pub fn normalize(&self) -> Self {
         match self {
             Expression::Var(_) |
@@ -114,20 +102,38 @@ impl Expression {
     }
 }
 
+impl fmt::Display for Expression {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Expression::Var(id) => {
+                write!(f, "{}", id)
+            },
+            Expression::Abs(Abstraction(Variable(id), body)) => {
+                write!(f, "(λ{}.{})", id, body)
+            },
+            Expression::App(Application(box e1, box e2)) => {
+                write!(f, "({} {})", e1, e2)
+            },
+        }
+    }
+}
+
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Variable(pub String);
 
 impl Variable {
-    fn to_s(&self) -> String {
-        self.0.clone()
-    }
-
     fn replace(&self, old: &Variable, new: &Variable) -> Self {
         if self.0 == old.0 {
             Variable(new.0.clone())
         } else {
             self.clone()
         }
+    }
+}
+
+impl fmt::Display for Variable {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
