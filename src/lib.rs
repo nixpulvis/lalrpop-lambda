@@ -78,7 +78,7 @@ impl Expression {
                 if id == variable {
                     self.clone()
                 } else if !free.contains(id) {
-                    Expression::Abs(Abstraction(variable.clone(),
+                    Expression::Abs(Abstraction(id.clone(),
                                                 box body.substitute(value, variable)))
                 } else {
                     let fresh = Variable("??".to_string());
