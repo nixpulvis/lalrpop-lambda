@@ -71,13 +71,10 @@ impl Expression {
         }
     }
 
-    pub fn substitute(&self, value: &Self, variable: &Variable) -> Self {
+    fn substitute(&self, value: &Self, variable: &Variable) -> Self {
         match self {
-            Expression::Abs(Abstraction(id, body)) => {
-                let free = dbg!(value.free_variables());
-                if id == variable {
-                    self.clone()
-                } else if !free.contains(id) {
+            Expression::Abs(Abstraction(id, box body)) => {
+                if id == variable || !value.free_variables().contains(id) {
                     Expression::Abs(Abstraction(id.clone(),
                                                 box body.substitute(value, variable)))
                 } else {
@@ -171,6 +168,36 @@ mod tests {
     }
 
     #[test]
+    fn normalize() {
+        let parser = ExpressionParser::new();
+
+        let a   = parser.parse("a").unwrap();
+        let ida = parser.parse("(λx.x) a").unwrap();
+        assert_eq!(a, ida.normalize());
+
+        let two_args = parser.parse(r"(\x.\y.x y) a b").unwrap();
+        let one_arg  = parser.parse(r"(\y.a y) b").unwrap();
+        let app      = parser.parse(r"(a b)").unwrap();
+        assert_eq!(app, one_arg.normalize());
+        assert_eq!(app, two_args.normalize());
+
+        let expected = parser.parse(r"\x.x").unwrap();
+        let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
+        println!("{} : {} -> {}", expected, actual, actual.normalize());
+        assert_eq!(expected, actual.normalize());
+    }
+
+    #[test]
+    #[ignore]
+    fn normalize_Ω() {
+        let parser = ExpressionParser::new();
+
+        let Ω = parser.parse(r"(\x. (x x)) (\x. (x x))").unwrap();
+        let id = parser.parse(r"\x.x").unwrap();
+        assert_eq!(id, Ω.normalize());
+    }
+
+    #[test]
     fn replace() {
         let parser = ExpressionParser::new();
         let a_var = Variable("a".into());
@@ -183,33 +210,6 @@ mod tests {
         let id = parser.parse(r"λa.a").unwrap();
         let id2 = parser.parse(r"λb.b").unwrap();
         assert_eq!(id2, id.replace(&a_var, &b_var));
-    }
-
-    // #[test]
-    // fn substitute() {
-    //     let parser = ExpressionParser::new();
-
-    //     let a = parser.parse(r"a").unwrap();
-    //     let id = parser.parse(r"λx.x").unwrap();
-    //     assert_eq!(a, id.substitute(&a));
-    //     let ω = parser.parse(r"λx.(x x)").unwrap();
-    //     let ids = parser.parse(r"((λx.x) (λx.x))").unwrap();
-    //     assert_eq!(ids, ω.substitute(&id));
-    // }
-
-    #[test]
-    fn normalize() {
-        let parser = ExpressionParser::new();
-
-        // let odd = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
-        // let normal = odd.normalize();
-
-        let expected = parser.parse(r"\x.x").unwrap();
-        let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
-        println!("{} : {} -> {}", expected, actual, actual.normalize());
-        assert_eq!(expected, actual.normalize());
-        // assert_eq!(parser.parse(r"\x.x").unwrap(),
-        //            parser.parse(r"(\x. (x x)) (\x. (x x))").unwrap().normalize());
     }
 
     #[test]
