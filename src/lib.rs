@@ -201,12 +201,13 @@ mod tests {
     fn normalize() {
         let parser = ExpressionParser::new();
 
-        let odd = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
-        let normal = odd.normalize();
-        println!("{}", odd.to_s());
-        println!("{}", normal.to_s());
-        assert_eq!(parser.parse(r"\x.x").unwrap(),
-                   parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap().normalize());
+        // let odd = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
+        // let normal = odd.normalize();
+
+        let expected = parser.parse(r"\x.x").unwrap();
+        let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
+        println!("{} : {} -> {}", expected, actual, actual.normalize());
+        assert_eq!(expected, actual.normalize());
         // assert_eq!(parser.parse(r"\x.x").unwrap(),
         //            parser.parse(r"(\x. (x x)) (\x. (x x))").unwrap().normalize());
     }

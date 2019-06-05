@@ -1,57 +1,49 @@
 #![feature(non_ascii_idents)]
 extern crate lalrpop_lambda;
 
+use lalrpop_lambda::Expression;
 use lalrpop_lambda::lambda::ExpressionParser;
 
+macro_rules! play {
+    ($expr:expr $(, $func:expr)?) => {{
+        let e = ExpressionParser::new().parse($expr).unwrap();
+        print!("{} parse-> {}", $expr, e);
+        $(
+            let e = $func(&e);  // very funky.
+            print!(" -> {}", e);
+        )?
+        println!("");
+        e
+    }}
+}
+
 fn main() {
-    let parser = ExpressionParser::new();
+    play!("x");
+    play!(r"\x.x");
+    play!(r"\x.y");
+    play!("x x");
+    play!("x y");
 
-    // Bad.
-    dbg!(parser.parse(r"\x.\y.y \a.b"));
-    dbg!(parser.parse(r"\x.\y.(y \a.b)"));
+    play!(r"(\x.x) x", Expression::normalize);
+    play!(r"(\x.x) y", Expression::normalize);
 
-    // Good.
-    dbg!(parser.parse(r"x"));
-    dbg!(parser.parse(r"\x.x"));
-    dbg!(parser.parse(r"\x.x y"));
-    dbg!(parser.parse(r"\x.\y.y z"));
+    // Single β-reduction identity function.
+    play!(r"\x.x a", Expression::normalize);
+    play!(r"(\x.x) a", Expression::normalize);
 
-    // Identity function.
-    let id = parser.parse(r"λx.x").unwrap();
-    dbg!(&id.to_s());
+    // Partial application.
+    let norm = play!(r"(\x.\y.x y) a", Expression::normalize);
+    let norm = play!(&format!("({}) b", norm), Expression::normalize);
 
-    // Make the Y combinator.
-    dbg!({
-        let ω = parser.parse(r"λx.(x x)").unwrap();
-        ω.to_s()
-    });
-    dbg!({
-        let Ω = parser.parse(r"(λx.(x x)) (λx.(x x))").unwrap();
-        &Ω.to_s()
-    });
-    dbg!({
-        let W = parser.parse(r"λf.λx. f x x").unwrap();
-        &W.to_s()
-    });
-    dbg!({
-        let Y = parser.parse(r"λf.(λx.f (x x)) (λx.f (x x))").unwrap();
-        &Y.to_s()
-    });
-
-    let multi = parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap();
-    dbg!(&multi.to_s());
+    // Multiple (curried) β-reductions on an identity function.
+    play!(r"(\x.\y.x y) a b", Expression::normalize);
 
     println!("\n\n\n");
-    dbg!(parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap().normalize());
 
-    println!("\n\n\n");
-    dbg!(parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
+    // Ω
+    play!(r"\x.(x x) (\x.(x x))");
+    play!(r"(\x.(x x)) (\x.(x x))");
 
-    println!("\n\n\n");
-    dbg!(parser.parse(r"\f.\x.(f (x x) f (x x)) y").unwrap().normalize().to_s());
-
-    dbg!(parser.parse(r"\x. f (x x)"));
-    dbg!(parser.parse(r"\x. f x x"));
-    dbg!(parser.parse(r"\f.(\x. f (x x)) (\x. f (x x))"));
-    dbg!(parser.parse(r"(\x. (x x)) (\x. (x x))"));
+    // XXX: Blows the stack in our strategy.
+    // play!(r"(\x.(x x)) (\x.(x x))", Expression::normalize);
 }
