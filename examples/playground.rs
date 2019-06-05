@@ -2,7 +2,7 @@
 extern crate lalrpop_lambda;
 
 use lalrpop_lambda::Expression;
-use lalrpop_lambda::lambda::ExpressionParser;
+use lalrpop_lambda::parse::ExpressionParser;
 
 macro_rules! play {
     ($expr:expr $(, $func:expr)?) => {{

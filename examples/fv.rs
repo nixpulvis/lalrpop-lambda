@@ -1,6 +1,6 @@
 extern crate lalrpop_lambda;
 
-use lalrpop_lambda::lambda::ExpressionParser;
+use lalrpop_lambda::parse::ExpressionParser;
 
 fn main() {
     let parser = ExpressionParser::new();
