@@ -9,7 +9,7 @@ macro_rules! play {
         let e = ExpressionParser::new().parse($expr).unwrap();
         print!("{} parse-> {}", $expr, e);
         $(
-            let e = $func(&e);  // very funky.
+            let e = $func(&e, false);  // very funky.
             print!(" -> {}", e);
         )?
         println!("");
@@ -38,7 +38,11 @@ fn main() {
     // Multiple (curried) β-reductions on an identity function.
     play!(r"(\x.\y.x y) a b", Expression::normalize);
 
-    println!("\n\n\n");
+    println!("\n");
+
+    play!(r"((\x.(\x.x x) a) b)", Expression::normalize);
+
+    println!("\n");
 
     // Ω
     play!(r"\x.(x x) (\x.(x x))");

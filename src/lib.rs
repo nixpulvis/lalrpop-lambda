@@ -20,20 +20,69 @@ macro_rules! map(
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Expression {
+    /// A potentially free variable
+    ///
+    /// ```
+    /// let parser = lalrpop_lambda::lambda::ExpressionParser::new();
+    ///
+    /// assert!(parser.parse("x").is_ok());
+    /// ```
     Var(Variable),
+    /// An abstraction over a bound variable
+    ///
+    /// ```
+    /// let parser = lalrpop_lambda::lambda::ExpressionParser::new();
+    ///
+    /// assert!(parser.parse("λx.x").is_ok());
+    /// ```
     Abs(Abstraction),
+    /// An application of two expressions
+    ///
+    /// ```
+    /// let parser = lalrpop_lambda::lambda::ExpressionParser::new();
+    ///
+    /// assert!(parser.parse("a b").is_ok());
+    /// ```
     App(Application),
 }
 
 impl Expression {
-    pub fn normalize(&self) -> Self {
+    /// α-conversion
+    pub fn rename(&self, old: &Variable, new: &Variable) -> Self {
+        unimplemented!()
+    }
+
+    /// β-reduction small-step semantics.
+    ///
+    /// η: Local completeness in natural deduction.
+    ///
+    /// Local reducibility in natural deduction.
+    pub fn apply(&self, η: bool) -> Self {
+        unimplemented!()
+    }
+
+    /// Big-step natural semantics.
+    ///
+    /// η: Global completeness in natural deduction.
+    ///
+    /// Global reducibility in natural deduction.
+    ///
+    /// ```
+    /// let parser = lalrpop_lambda::lambda::ExpressionParser::new();
+    ///
+    /// let expression = parser.parse("((λx.(λy.x y) b) a)").unwrap();
+    /// let normal = parser.parse("a b").unwrap();
+    ///
+    /// assert_eq!(normal, expression.normalize(false));
+    /// ```
+    pub fn normalize(&self, η: bool) -> Self {
         match self {
             Expression::Var(_) |
             Expression::Abs(_) => self.clone(),
             Expression::App(Application(box e1, box e2)) => {
-                match e1.normalize() {
+                match e1.normalize(η) {
                     Expression::Abs(Abstraction(id, body)) => {
-                        body.substitute(&e2, &id).normalize()
+                        body.substitute(&e2, &id).normalize(η)
                     },
                     e @ _ => {
                         Expression::App(Application(box e, box e2.clone()))
@@ -43,6 +92,21 @@ impl Expression {
         }
     }
 
+    /// FV(M) is the set of variables in M, not closed by a λ term.
+    ///
+    /// ```
+    /// use std::collections::HashSet;
+    /// use lalrpop_lambda::Variable;
+    ///
+    /// let parser = lalrpop_lambda::lambda::ExpressionParser::new();
+    ///
+    /// let mut free = HashSet::new();
+    /// free.insert(Variable("y".into()));
+    ///
+    /// let expression = parser.parse("λx.(x y)").unwrap();
+    ///
+    /// assert_eq!(free, expression.free_variables());
+    /// ```
     pub fn free_variables(&self) -> HashSet<Variable> {
         match self {
             Expression::Var(v) => map! { v.clone() },
@@ -55,7 +119,7 @@ impl Expression {
         }
     }
 
-    pub fn replace(&self, old: &Variable, new: &Variable) -> Self {
+    fn replace(&self, old: &Variable, new: &Variable) -> Self {
         match self {
             Expression::Var(v) => {
                 Expression::Var(v.replace(old, new))
@@ -173,18 +237,21 @@ mod tests {
 
         let a   = parser.parse("a").unwrap();
         let ida = parser.parse("(λx.x) a").unwrap();
-        assert_eq!(a, ida.normalize());
+        assert_eq!(a, ida.normalize(false));
 
         let two_args = parser.parse(r"(\x.\y.x y) a b").unwrap();
         let one_arg  = parser.parse(r"(\y.a y) b").unwrap();
         let app      = parser.parse(r"(a b)").unwrap();
-        assert_eq!(app, one_arg.normalize());
-        assert_eq!(app, two_args.normalize());
+        assert_eq!(app, one_arg.normalize(false));
+        assert_eq!(app, two_args.normalize(false));
+
+        let expected = parser.parse(r"((\x.(\x.x x) a) b)").unwrap();
+        let actual = parser.parse(r"((\x.(\x.x x) a) b)").unwrap();
 
         let expected = parser.parse(r"\x.x").unwrap();
         let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
-        println!("{} : {} -> {}", expected, actual, actual.normalize());
-        assert_eq!(expected, actual.normalize());
+        println!("{} : {} -> {}", expected, actual, actual.normalize(false));
+        assert_eq!(expected, actual.normalize(false));
     }
 
     #[test]
@@ -194,7 +261,7 @@ mod tests {
 
         let Ω = parser.parse(r"(\x. (x x)) (\x. (x x))").unwrap();
         let id = parser.parse(r"\x.x").unwrap();
-        assert_eq!(id, Ω.normalize());
+        assert_eq!(id, Ω.normalize(false));
     }
 
     #[test]
