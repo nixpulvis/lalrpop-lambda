@@ -6,17 +6,8 @@ extern crate lalrpop_util;
 use std::collections::HashSet;
 use std::fmt;
 
-macro_rules! map(
-    { $($value:expr),* } => {
-        {
-            let mut m = ::std::collections::HashSet::new();
-            $(
-                m.insert($value);
-            )*
-            m
-        }
-     };
-);
+#[macro_use]
+mod macros;
 
 /// A mutually recursive definition for all lambda expressions
 ///
