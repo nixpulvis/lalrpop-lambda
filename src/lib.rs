@@ -94,7 +94,7 @@ impl Expression {
                         body.substitute(&e2, &id).normalize(η)
                     },
                     e @ _ => {
-                        Expression::App(Application(box e, box e2.clone()))
+                        Expression::App(Application(box e.normalize(η), box e2.normalize(η)))
                     }
                 }
             },
@@ -267,14 +267,20 @@ mod tests {
         let actual = parser.parse(r"((\x.(\x.x x) a) b)").unwrap();
         assert_eq!(expected, actual.normalize(false));
 
-        let expected = Expression::Abs(Abstraction(Variable("y".into()),
-            box Expression::Abs(Abstraction(Variable("y'".into()),
-                box Expression::Var(Variable("y".into()))))));
+        let expected = parser.parse(r"\x.x").unwrap();
+        let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
+        assert_eq!(expected, actual.normalize(false));
+
+        let expected = Expression::Abs(Abstraction(variable!("y"),
+            box Expression::Abs(Abstraction(variable!("y'"),
+                box Expression::Var(variable!("y"))))));
         let actual = parser.parse(r"\y.(\x.\y.x) y").unwrap();
         assert_eq!(expected, actual.normalize(false));
 
-        let expected = parser.parse(r"\x.x").unwrap();
-        let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
+        let expected = abs!{f.abs!{x.app!(var!(f),
+            Expression::Abs(Abstraction(variable!("x'"),
+                                        box app!(app!(var!(f), var!(x)), var!("x'")))))}};
+        let actual = parser.parse(r"((λn.(λf.(λx.(f (n (f x)))))) (λf.(λx.(f x))))").unwrap();
         assert_eq!(expected, actual.normalize(false));
     }
 
@@ -291,8 +297,8 @@ mod tests {
     #[test]
     fn replace() {
         let parser = ExpressionParser::new();
-        let a_var = Variable("a".into());
-        let b_var = Variable("b".into());
+        let a_var = variable!("a");
+        let b_var = variable!("b");
 
         let a = parser.parse(r"a").unwrap();
         let b = parser.parse(r"b").unwrap();
@@ -307,11 +313,13 @@ mod tests {
     fn free_variables() {
         let parser = ExpressionParser::new();
 
-        assert_eq!(set! { Variable("x".into()) },
+        assert_eq!(set! { variable!(x) },
                    parser.parse(r"x").unwrap().free_variables());
         assert_eq!(set! { },
                    parser.parse(r"λx.x").unwrap().free_variables());
-        assert_eq!(set! { Variable("x".into()), Variable("y".into()) },
+        assert_eq!(set! { variable!(f), variable!(x) },
+                   parser.parse(r"f x").unwrap().free_variables());
+        assert_eq!(set! { variable!(x), variable!(y) },
                    parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
     }
 }

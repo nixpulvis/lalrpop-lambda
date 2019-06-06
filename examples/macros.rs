@@ -23,23 +23,24 @@ fn main() {
     let add = λ!{m.λ!{n.λ!{f.λ!{x.γ!(m, γ!(f, γ!(n, γ!(f, x))))}}}};
     println!("add:  {}", &add);
 
-    // println!();
+    println!();
 
-    // println!("(normalize (id one)): {}",
-    //          app!(id, one).normalize(false));
+    println!("(normalize (id one)): {}",
+             app!(id, one).normalize(false));
 
-    // println!("(add one one):\n{}",
-    //          app!(app!(add, one), one));
-    // println!("(normalize (add one one)):\n{}\n",
-    //          app!(app!(add, one), one).normalize(true));
-    // println!("(succ one):\n{}",
-    //          app!(succ, one));
-    // println!("(normalize (succ one)):\n{}\n",
-    //          app!(succ, one).normalize(true));
+    println!("(add one one):\n{}",
+             app!(app!(add, one), one));
+    println!("(normalize (add one one)):\n{}\n",
+             app!(app!(add, one), one).normalize(true));
 
-    // println!("{}", abs!{f.abs!{x.
-    //     app!(var!(f),
-    //          app!(app!(abs!{f.abs!{x.app!(var!(f), var!(x))}},
-    //                    var!(f)),
-    //               var!(x)))}}.normalize(true));
+    println!("(succ one):\n{}",
+             app!(succ, one));
+    println!("(normalize (succ one)):\n{}\n",
+             app!(succ, one).normalize(true));
+
+    println!("{}", abs!{f.abs!{x.
+        app!(var!(f),
+             app!(app!(abs!{f.abs!{x.app!(var!(f), var!(x))}},
+                       var!(f)),
+                  var!(x)))}}.normalize(true));
 }

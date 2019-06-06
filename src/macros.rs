@@ -14,6 +14,10 @@ macro_rules! variable {
     ($b:ident) => {{
         use $crate::{Expression, Variable, Abstraction, Application};
         Variable(stringify!($b).into())
+    }};
+    ($b:expr) => {{
+        use $crate::{Expression, Variable, Abstraction, Application};
+        Variable($b.into())
     }}
 }
 
@@ -21,6 +25,10 @@ macro_rules! variable {
 #[macro_export]
 macro_rules! var {
     ($b:ident) => {{
+        use $crate::{Expression, Variable, Abstraction, Application};
+        Expression::Var(variable!($b))
+    }};
+    ($b:expr) => {{
         use $crate::{Expression, Variable, Abstraction, Application};
         Expression::Var(variable!($b))
     }}
