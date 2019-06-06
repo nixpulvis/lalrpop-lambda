@@ -84,8 +84,10 @@ impl Expression {
     /// ```
     pub fn normalize(&self, η: bool) -> Self {
         match self {
-            Expression::Var(_) |
-            Expression::Abs(_) => self.clone(),
+            Expression::Var(_) => self.clone(),
+            Expression::Abs(Abstraction(id, box body)) => {
+                Expression::Abs(Abstraction(id.clone(), box body.normalize(η)))
+            },
             Expression::App(Application(box e1, box e2)) => {
                 match e1.normalize(η) {
                     Expression::Abs(Abstraction(id, body)) => {
@@ -95,6 +97,18 @@ impl Expression {
                         Expression::App(Application(box e, box e2.clone()))
                     }
                 }
+            },
+        }
+    }
+
+    pub fn variables(&self) -> HashSet<Variable> {
+        match self {
+            Expression::Var(v) => set! { v.clone() },
+            Expression::Abs(Abstraction(id, body)) => {
+                body.variables().union(&set! { id.clone() }).cloned().collect()
+            },
+            Expression::App(Application(e1, e2)) => {
+                e1.variables().union(&e2.variables()).cloned().collect()
             }
         }
     }
@@ -133,8 +147,8 @@ impl Expression {
                     Expression::Abs(Abstraction(id.clone(),
                                                 box body.substitute(value, variable)))
                 } else {
-                    let fresh = Variable("??".to_string());
-                    let new_body = body.replace(&variable, &fresh);
+                    let fresh = Variable(format!("{}'", id));
+                    let new_body = body.replace(&id, &fresh);
                     Expression::Abs(Abstraction(fresh,
                                                 box new_body.substitute(value, variable)))
                 }
@@ -249,12 +263,18 @@ mod tests {
         assert_eq!(app, one_arg.normalize(false));
         assert_eq!(app, two_args.normalize(false));
 
-        let expected = parser.parse(r"((\x.(\x.x x) a) b)").unwrap();
+        let expected = parser.parse(r"(a a)").unwrap();
         let actual = parser.parse(r"((\x.(\x.x x) a) b)").unwrap();
+        assert_eq!(expected, actual.normalize(false));
+
+        let expected = Expression::Abs(Abstraction(Variable("y".into()),
+            box Expression::Abs(Abstraction(Variable("y'".into()),
+                box Expression::Var(Variable("y".into()))))));
+        let actual = parser.parse(r"\y.(\x.\y.x) y").unwrap();
+        assert_eq!(expected, actual.normalize(false));
 
         let expected = parser.parse(r"\x.x").unwrap();
         let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
-        println!("{} : {} -> {}", expected, actual, actual.normalize(false));
         assert_eq!(expected, actual.normalize(false));
     }
 
