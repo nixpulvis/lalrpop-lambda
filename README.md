@@ -4,10 +4,24 @@
 use lalrpop_lambda::lambda::ExpressionParser;
 let parser = ExpressionParser::new();
 
-let x = parser.parse(r"x");
+// Parse a single free variable.
+let x = parser.parse("x");
+
+// Parse the identity function.
 let id = parser.parse(r"\x.x");
-let unbound_y = parser.parse(r"\x.x y");
+
+// f ∘ g
 let compose = parser.parse(r"\x.\y.x y"));
+
+// Print the free variable in this expression.
+let unbound_y = parser.parse(r"\x.x y");
+println!("{}", unbound_y.free_variables());
+
+// No need for parsing strings at all.
+let id = λ!{x.x};
+let one = λ!{f.λ!{x.γ!(f, x)}};
+println!("(normalize (id one)): {}",
+         app!(id, one).normalize(false));
 
 // Make the Y combinator.
 let ω = parser.parse(r"λx.(x x)");
