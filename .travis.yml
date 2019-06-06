@@ -1,0 +1,26 @@
+language: rust
+sudo: false
+rust:
+  - stable
+  - beta
+  - nightly
+
+matrix:
+  allow_failures:
+    - rust: stable
+    - rust: beta
+
+script:
+  - cargo test
+  - cargo doc --no-deps
+
+after_success:
+  # TODO: PR/branch docs.
+  - test $TRAVIS_PULL_REQUEST == "false" &&
+    test $TRAVIS_BRANCH == "master" &&
+    test $TRAVIS_ALLOW_FAILURE == "false" &&
+    bash deploy.sh
+
+env:
+  global:
+    secure: Qg/smWvkCJGLDb42Mh61qzoLiXqbxfGcIp98JGTml8M194bCBxzMJFVomYE2h8Hz4Oc+opW6phWR2yS9OTy04Uf6c/Y+DDBrSj2F+J0wn6+1u0MktzGjLHvz9Nv+7FFp5gNcUAbUOkc2VptbiBype4hL/VUnbhAnu/cDxUvugOfYpdJSCn8cAAqCT1v7K8NOFLDJDzH3vFcNM+VNFVFyLQP/1p3rJExECYtE8/75QPqGDWeHhA6g/OZ/h3203xrhaopocVVA1aATp8K7719Fy7Aiqf/hArU+WFJZ/kBKm4Eng4m/8T5ZsFbJX2qngFvryKvloELKSWuT1QFPFK81lfOHcBb+gQV8BMihpOs7UErOXFZPjyYPyXjgPcAZ9QTvsEnD1E2PED/S5F5s4ZmpTcwdI9w0A5ZDYaqbcMJ0dfOIyppQrWun2i62qdcMaP/gxMn3csF1aw7Xu6gAQvhiuyWWEDYcmv0mgn33cUTeT+bDAVMSFfATQ4CHkom5oj00V04Ep3OhJDs5VEi0+3/uz2UodxTM+XgSlbzMK3n/sLzb6jyqChGboVjhHGyLjbPZE2ZflkLO3+nMg1Ub5UT4deHK8GOpDjiyPNUL5pwFwFWZiR4nbf94ISucGaNE59MU3oTSiJuqKWDJ/Xnhh9/yvAzDubuDZvBPQ008in9fscQ=
