@@ -116,9 +116,9 @@ impl Expression {
     /// ```
     pub fn free_variables(&self) -> HashSet<Variable> {
         match self {
-            Expression::Var(v) => map! { v.clone() },
+            Expression::Var(v) => set! { v.clone() },
             Expression::Abs(Abstraction(id, body)) => {
-                body.free_variables().difference(&map! { id.clone() }).cloned().collect()
+                body.free_variables().difference(&set! { id.clone() }).cloned().collect()
             },
             Expression::App(Application(e1, e2)) => {
                 e1.free_variables().union(&e2.free_variables()).cloned().collect()
@@ -287,11 +287,11 @@ mod tests {
     fn free_variables() {
         let parser = ExpressionParser::new();
 
-        assert_eq!(map! { Variable("x".into()) },
+        assert_eq!(set! { Variable("x".into()) },
                    parser.parse(r"x").unwrap().free_variables());
-        assert_eq!(map! { },
+        assert_eq!(set! { },
                    parser.parse(r"λx.x").unwrap().free_variables());
-        assert_eq!(map! { Variable("x".into()), Variable("y".into()) },
+        assert_eq!(set! { Variable("x".into()), Variable("y".into()) },
                    parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
     }
 }
