@@ -2,7 +2,7 @@
 name = "lalrpop-lambda"
 description = "A λ-calculus grammar writting with LALRPOP."
 repository = "https://github.com/nixpulvis/lalrpop-lambda"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Nathan Lilienthal <nathan@nixpulvis.com>"]
 license = "MIT"
 edition = "2018"
