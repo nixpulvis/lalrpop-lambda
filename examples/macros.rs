@@ -4,6 +4,13 @@
 extern crate lalrpop_lambda;
 
 fn main() {
+    let ω = abs!{x.app!(x,x)};
+    // Doesn't do what you might want.
+    println!("{}", app!(x,ω));
+    // But this does ;)
+    println!("{} -> {}", app!({&ω},x), app!({&ω},x).normalize(false));
+
+    println!();
     let id = λ!{x.x};
     print!("id: {}", id);
     let id = abs!{x.x};
@@ -24,23 +31,25 @@ fn main() {
     println!("add:  {}", &add);
 
     println!();
+    println!("(normalize (id one)) -> {}",
+             app!({&id}, {&one}).normalize(false));
 
-    println!("(normalize (id one)): {}",
-             app!(id, one).normalize(false));
+    println!("(add one one) -> {}",
+             app!(app!({&add}, {&one}), {&one}));
+    println!("(normalize (add one one)) -> {}",
+             app!(app!({&add}, {&one}), {&one}).normalize(false));
 
-    println!("(add one one):\n{}",
-             app!(app!(add, one), one));
-    println!("(normalize (add one one)):\n{}\n",
-             app!(app!(add, one), one).normalize(true));
+    println!();
+    println!("(succ one) -> {}",
+             app!({&succ}, {&one}));
+    println!("(normalize (succ one)) -> {}",
+             app!({&succ}, {&one}).normalize(false));
 
-    println!("(succ one):\n{}",
-             app!(succ, one));
-    println!("(normalize (succ one)):\n{}\n",
-             app!(succ, one).normalize(true));
-
-    println!("{}", abs!{f.abs!{x.
-        app!(var!(f),
-             app!(app!(abs!{f.abs!{x.app!(var!(f), var!(x))}},
-                       var!(f)),
-                  var!(x)))}}.normalize(true));
+    println!();
+    println!("{}",
+             abs!{f.abs!{x.
+                 app!(var!(f),
+                      app!(app!(abs!{f.abs!{x.app!(var!(f), var!(x))}},
+                                var!(f)),
+                           var!(x)))}}.normalize(false));
 }

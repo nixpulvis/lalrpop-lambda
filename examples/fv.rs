@@ -1,10 +1,9 @@
+#![feature(box_syntax)]
+
+#[macro_use]
 extern crate lalrpop_lambda;
 
-use lalrpop_lambda::parse::ExpressionParser;
-
 fn main() {
-    let parser = ExpressionParser::new();
-
-    dbg!(parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
-    dbg!(parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap().free_variables());
+    dbg!(app!(abs!{x.app!(x,y)}, abs!{y.app!(x,y)}).free_variables());
+    dbg!(app!(abs!{f.abs!{x.app!(f,x)}}, abs!{x.x}).free_variables());
 }

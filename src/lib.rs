@@ -270,67 +270,69 @@ mod tests {
 
     #[test]
     fn normalize() {
-        let parser = ExpressionParser::new();
+        assert_eq!(var!(a), app!(abs!{x.x}, a).normalize(false));
 
-        let a   = parser.parse("a").unwrap();
-        let ida = parser.parse("(λx.x) a").unwrap();
-        assert_eq!(a, ida.normalize(false));
+        assert_eq!(app!(a, a), app!(abs!{x.app!(abs!{x.app!(x, x)}, a)}, b)
+                                   .normalize(false));
+        assert_eq!(app!(a, b), app!(abs!{y.app!(a, y)}, b)
+                                   .normalize(false));
+        assert_eq!(app!(b, a), app!(app!(abs!{x.abs!{y.app!(x, y)}}, b), a)
+                                   .normalize(false));
+        assert_eq!(app!(b, b), app!(app!(abs!{x.abs!{y.app!(x, y)}}, b), b)
+                                   .normalize(false));
 
-        let two_args = parser.parse(r"(\x.\y.x y) a b").unwrap();
-        let one_arg  = parser.parse(r"(\y.a y) b").unwrap();
-        let app      = parser.parse(r"(a b)").unwrap();
-        assert_eq!(app, one_arg.normalize(false));
-        assert_eq!(app, two_args.normalize(false));
+        assert_eq!(abs!{a.a}, app!(abs!{x.x}, abs!{a.a})
+                                .normalize(false));
+        assert_eq!(abs!{x.a}, app!(abs!{f.abs!{x.app!(f,a)}}, abs!{x.x})
+                                .normalize(false));
+    }
 
-        let expected = parser.parse(r"(a a)").unwrap();
-        let actual = parser.parse(r"((\x.(\x.x x) a) b)").unwrap();
-        assert_eq!(expected, actual.normalize(false));
-
-        let expected = parser.parse(r"\x.x").unwrap();
-        let actual = parser.parse(r"(\f.\x.(f x)) (\x.x)").unwrap();
-        assert_eq!(expected, actual.normalize(false));
-
+    #[test]
+    fn normalize_capture_avoid() {
         let expected = Expression::Abs(Abstraction(variable!("y"),
             box Expression::Abs(Abstraction(variable!("y'"),
                 box Expression::Var(variable!("y"))))));
-        let actual = parser.parse(r"\y.(\x.\y.x) y").unwrap();
+        let actual = abs!{y.app!(abs!{x.abs!{y.x}}, y)};
         assert_eq!(expected, actual.normalize(false));
 
         let expected = abs!{f.abs!{x.app!(var!(f),
             Expression::Abs(Abstraction(variable!("x'"),
-                                        box app!(app!(var!(f), var!(x)), var!("x'")))))}};
-        let actual = parser.parse(r"((λn.(λf.(λx.(f (n (f x)))))) (λf.(λx.(f x))))").unwrap();
+                                        box app!(app!(var!(f),
+                                                      var!(x)),
+                                                 var!("x'")))))}};
+        let actual = app!(abs!{n.abs!{f.abs!{x.app!(f, app!(n, app!(f, x)))}}},
+                          abs!{f.abs!{x.app!(f, x)}});
         assert_eq!(expected, actual.normalize(false));
 
-        let expected = var!(f);
-        let actual = parser.parse(r"λx.(f x)").unwrap();
-        assert_eq!(expected, actual.normalize(true));
+        let expected = Expression::Abs(Abstraction(variable!("x'"),
+                                                   box var!(x)));
+        let actual = app!(abs!{f.abs!{x.app!(f,a)}}, abs!{a.x})
+                        .normalize(false);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn normalize_η() {
+        assert_eq!(var!(f), abs!{x.app!(f,x)}.normalize(true));
+        assert_eq!(app!(a, a), app!(app!(abs!{x.app!(x, x)}, a), b)
+                               .normalize(false));
+        assert_eq!(app!(x, b), app!(app!(abs!{x.app!(x, x)}, a), b)
+                               .normalize(true));
     }
 
     #[test]
     #[ignore]
     #[allow(non_snake_case)]
     fn normalize_Ω() {
-        let parser = ExpressionParser::new();
-
-        let Ω = parser.parse(r"(\x. (x x)) (\x. (x x))").unwrap();
-        let id = parser.parse(r"\x.x").unwrap();
-        assert_eq!(id, Ω.normalize(false));
+        let Ω = app!(abs!{x.app!(x,x)}, abs!{x.app!(x,x)});
+        assert_eq!(abs!{x.x}, Ω.normalize(false));
     }
 
     #[test]
     fn replace() {
-        let parser = ExpressionParser::new();
-        let a_var = variable!("a");
-        let b_var = variable!("b");
-
-        let a = parser.parse(r"a").unwrap();
-        let b = parser.parse(r"b").unwrap();
-        assert_eq!(b, a.replace(&a_var, &b_var));
-
-        let id = parser.parse(r"λa.a").unwrap();
-        let id2 = parser.parse(r"λb.b").unwrap();
-        assert_eq!(id2, id.replace(&a_var, &b_var));
+        assert_eq!(var!(b), var!(a).replace(&variable!(a), &variable!(b)));
+        assert_eq!(app!(b,b), app!(a,a).replace(&variable!(a), &variable!(b)));
+        assert_eq!(abs!{b.b}, abs!{a.a}.replace(&variable!(a), &variable!(b)));
     }
 
     #[test]

@@ -46,6 +46,21 @@ macro_rules! abs {
 /// An application (`App`) expression
 #[macro_export]
 macro_rules! app {
+    ($func:ident, $arg:ident) => {{
+        $crate::Expression::App(
+            $crate::Application(box var!($func),
+                                box var!($arg)))
+    }};
+    ($func:ident, $arg:expr) => {{
+        $crate::Expression::App(
+            $crate::Application(box var!($func),
+                                box $arg.clone()))
+    }};
+    ($func:expr, $arg:ident) => {{
+        $crate::Expression::App(
+            $crate::Application(box $func.clone(),
+                                box var!($arg)))
+    }};
     ($func:expr, $arg:expr) => {{
         $crate::Expression::App(
             $crate::Application(box $func.clone(),
