@@ -56,6 +56,7 @@ pub struct Application(pub Box<Expression>, pub Box<Expression>);
 impl Expression {
     /// α-conversion
     pub fn rename(&self, old: &Variable, new: &Variable) -> Self {
+        dbg!(old, new);
         unimplemented!()
     }
 
@@ -65,6 +66,7 @@ impl Expression {
     ///
     /// Local reducibility in natural deduction.
     pub fn apply(&self, η: bool) -> Self {
+        dbg!(η);
         unimplemented!()
     }
 
@@ -91,6 +93,8 @@ impl Expression {
             Expression::App(Application(box e1, box e2)) => {
                 match e1.normalize(η) {
                     Expression::Abs(Abstraction(id, body)) => {
+                        // (λx.t) s → t[x := s]
+                        // TODO: This should be the job of `apply` (aka →).
                         body.substitute(&e2, &id).normalize(η)
                     },
                     e @ _ => {
@@ -130,39 +134,45 @@ impl Expression {
     /// ```
     pub fn free_variables(&self) -> HashSet<Variable> {
         match self {
-            Expression::Var(v) => set! { v.clone() },
+            // FV(x) = { x }, where x is a variable.
+            Expression::Var(id) => set! { id.clone() },
+            // FV(λx.M) = FV(M) \ { x }.
             Expression::Abs(Abstraction(id, body)) => {
-                body.free_variables().difference(&set! { id.clone() }).cloned().collect()
+                body.free_variables()
+                    .difference(&set! { id.clone() })
+                    .cloned()
+                    .collect()
             },
+            // FV(M N) = FV(M) ∪ FV(N).
             Expression::App(Application(e1, e2)) => {
-                e1.free_variables().union(&e2.free_variables()).cloned().collect()
+                e1.free_variables()
+                  .union(&e2.free_variables())
+                  .cloned()
+                  .collect()
             }
         }
     }
 
-    fn substitute(&self, value: &Self, variable: &Variable) -> Self {
+    /// self[x := v]
+    fn substitute(&self, v: &Self, x: &Variable) -> Self {
         match self {
             Expression::Abs(Abstraction(id, box body)) => {
-                if id == variable || !value.free_variables().contains(id) {
+                if id == x || !v.free_variables().contains(id) {
                     Expression::Abs(Abstraction(id.clone(),
-                                                box body.substitute(value, variable)))
+                                                box body.substitute(v, x)))
                 } else {
                     let fresh = Variable(format!("{}'", id));
-                    let new_body = body.replace(&id, &fresh);
+                    let body = body.replace(&id, &fresh);
                     Expression::Abs(Abstraction(fresh,
-                                                box new_body.substitute(value, variable)))
+                                                box body.substitute(v, x)))
                 }
             },
             Expression::Var(id) => {
-                if id == variable {
-                    value.clone()
-                } else {
-                    self.clone()
-                }
+                (if id == x { v } else { self }).clone()
             },
             Expression::App(Application(e1, e2)) => {
-                Expression::App(Application(box e1.substitute(value, variable),
-                                            box e2.substitute(value, variable)))
+                Expression::App(Application(box e1.substitute(v, x),
+                                            box e2.substitute(v, x)))
             }
         }
     }
@@ -286,6 +296,7 @@ mod tests {
 
     #[test]
     #[ignore]
+    #[allow(non_snake_case)]
     fn normalize_Ω() {
         let parser = ExpressionParser::new();
 

@@ -36,7 +36,7 @@ fn main() {
     // Partial application.
     println!();
     let norm = play!(r"(\x.\y.x y) a", Expression::normalize);
-    let norm = play!(&format!("({}) b", norm), Expression::normalize);
+    play!(&format!("({}) b", norm), Expression::normalize);
     // Multiple (curried) β-reductions on an identity function.
     play!(r"(\x.\y.x y) a b", Expression::normalize);
 
@@ -48,5 +48,5 @@ fn main() {
     play!(r"\x.(x x) (\x.(x x))");
     play!(r"(\x.(x x)) (\x.(x x))");
     // XXX: Blows the stack in our strategy.
-    // play!(r"(\x.(x x)) (\x.(x x))", Expression::normalize);
+    play!(r"(\x.(x x)) (\x.(x x))", Expression::normalize);
 }

@@ -1,5 +1,3 @@
-use super::{Expression, Variable, Abstraction, Application};
-
 /// A raw `Variable`
 ///
 /// ```
@@ -12,12 +10,10 @@ use super::{Expression, Variable, Abstraction, Application};
 #[macro_export]
 macro_rules! variable {
     ($b:ident) => {{
-        use $crate::{Expression, Variable, Abstraction, Application};
-        Variable(stringify!($b).into())
+        $crate::Variable(stringify!($b).into())
     }};
     ($b:expr) => {{
-        use $crate::{Expression, Variable, Abstraction, Application};
-        Variable($b.into())
+        $crate::Variable($b.into())
     }}
 }
 
@@ -25,12 +21,10 @@ macro_rules! variable {
 #[macro_export]
 macro_rules! var {
     ($b:ident) => {{
-        use $crate::{Expression, Variable, Abstraction, Application};
-        Expression::Var(variable!($b))
+        $crate::Expression::Var(variable!($b))
     }};
     ($b:expr) => {{
-        use $crate::{Expression, Variable, Abstraction, Application};
-        Expression::Var(variable!($b))
+        $crate::Expression::Var(variable!($b))
     }}
 }
 
@@ -38,14 +32,14 @@ macro_rules! var {
 #[macro_export]
 macro_rules! abs {
     {$arg:ident . $body:ident} => {{
-        use $crate::{Expression, Variable, Abstraction, Application};
-        Expression::Abs(Abstraction(variable!($arg),
-                                    box var!($body)))
+        $crate::Expression::Abs(
+            $crate::Abstraction(variable!($arg),
+                                box var!($body)))
     }};
     {$arg:ident . $body:expr} => {{
-        use $crate::{Expression, Variable, Abstraction, Application};
-        Expression::Abs(Abstraction(variable!($arg),
-                                    box $body.clone()))
+        $crate::Expression::Abs(
+            $crate::Abstraction(variable!($arg),
+                                box $body.clone()))
     }};
 }
 
@@ -53,9 +47,9 @@ macro_rules! abs {
 #[macro_export]
 macro_rules! app {
     ($func:expr, $arg:expr) => {{
-        use $crate::{Expression, Variable, Abstraction, Application};
-        Expression::App(Application(box $func.clone(),
-                                    box $arg.clone()))
+        $crate::Expression::App(
+            $crate::Application(box $func.clone(),
+                                box $arg.clone()))
     }};
 }
 
@@ -126,13 +120,12 @@ macro_rules! γ {
 /// # }
 #[macro_export]
 macro_rules! set(
-    { $($value:expr),* } => {
-        {
-            let mut m = ::std::collections::HashSet::new();
-            $(
-                m.insert($value);
-            )*
-            m
-        }
-     };
+    { } => {{
+        ::std::collections::HashSet::new()
+    }};
+    { $($value:expr),* } => {{
+        let mut m = ::std::collections::HashSet::new();
+        $(m.insert($value);)*
+        m
+    }};
 );
