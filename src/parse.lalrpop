@@ -2,29 +2,34 @@ use crate::{Expression, Variable, Abstraction, Application};
 
 grammar;
 
+pub Id: Variable = r"[a-zA-Z0-9]+" => {
+    Variable(<>.to_string())
+};
+
 pub Expression: Expression = {
-    AppTerm => <>,
-    AbsTerm => <>,
+    Abstraction => <>,
+    Application => <>,
 }
 
-AbsTerm: Expression =
+Abstraction: Expression = {
     Lambda <id:Id> "." <term:Expression> => {
         Expression::Abs(Abstraction(id, box term))
-    };
+    }
+}
 
-AppTerm: Expression = {
-    Term => <>,
-    <e1:AppTerm> <e2:Term> => {
+Application: Expression = {
+    // NOTE: Base case of terminals is here to allow the `Application`
+    // production to be left associative.
+    Terminal => <>,
+    <e1:Application> <e2:Terminal> => {
         Expression::App(Application(box e1, box e2))
     }
 }
 
-Term: Expression = {
+Terminal: Expression = {
     Id => Expression::Var(<>),
     "(" <e:Expression> ")" => e,
 }
-
-pub Id: Variable = r"[a-zA-Z0-9]+" => Variable(<>.to_string());
 
 Lambda = {
     "λ",

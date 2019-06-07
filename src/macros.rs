@@ -35,8 +35,6 @@ macro_rules! var {
 }
 
 /// An abstraction (`Abs`) expression
-//
-// TODO: close over env and everything.
 #[macro_export]
 macro_rules! abs {
     {$arg:ident . $body:ident} => {{

@@ -24,30 +24,29 @@ fn main() {
     play!("x x");
     play!("x y");
 
+    println!();
     play!(r"(\x.x) x", Expression::normalize);
     play!(r"(\x.x) y", Expression::normalize);
 
     // Single β-reduction identity function.
+    println!();
     play!(r"\x.x a", Expression::normalize);
     play!(r"(\x.x) a", Expression::normalize);
 
     // Partial application.
+    println!();
     let norm = play!(r"(\x.\y.x y) a", Expression::normalize);
     let norm = play!(&format!("({}) b", norm), Expression::normalize);
-
     // Multiple (curried) β-reductions on an identity function.
     play!(r"(\x.\y.x y) a b", Expression::normalize);
 
-    println!("\n");
-
+    println!();
     play!(r"((\x.(\x.x x) a) b)", Expression::normalize);
 
-    println!("\n");
-
     // Ω
+    println!();
     play!(r"\x.(x x) (\x.(x x))");
     play!(r"(\x.(x x)) (\x.(x x))");
-
     // XXX: Blows the stack in our strategy.
     // play!(r"(\x.(x x)) (\x.(x x))", Expression::normalize);
 }
