@@ -92,7 +92,8 @@ impl Expression {
                                                    box Expression::Var(x)))
                    = body
                 {
-                    if η && (id == x || !e1.free_variables().contains(&x)) {
+                    // λx.(e1 x) -> e1 whenever x does not appear free in e1.
+                    if η && id == x && !e1.free_variables().contains(&id) {
                         return e1.normalize(η);
                     }
                 }
@@ -312,13 +313,9 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn normalize_η() {
         assert_eq!(var!(f), abs!{x.app!(f,x)}.normalize(true));
-        assert_eq!(app!(a, a), app!(app!(abs!{x.app!(x, x)}, a), b)
-                               .normalize(false));
-        assert_eq!(app!(x, b), app!(app!(abs!{x.app!(x, x)}, a), b)
-                               .normalize(true));
+        assert_eq!(abs!{x.app!(x,x)}, abs!{x.app!(x, x)}.normalize(true));
     }
 
     #[test]
