@@ -88,6 +88,15 @@ impl Expression {
         match self {
             Expression::Var(_) => self.clone(),
             Expression::Abs(Abstraction(id, box body)) => {
+                if let Expression::App(Application(box e1,
+                                                   box Expression::Var(x)))
+                   = body
+                {
+                    if η && (id == x || !e1.free_variables().contains(&x)) {
+                        return e1.normalize(η);
+                    }
+                }
+
                 Expression::Abs(Abstraction(id.clone(), box body.normalize(η)))
             },
             Expression::App(Application(box e1, box e2)) => {
@@ -292,6 +301,10 @@ mod tests {
                                         box app!(app!(var!(f), var!(x)), var!("x'")))))}};
         let actual = parser.parse(r"((λn.(λf.(λx.(f (n (f x)))))) (λf.(λx.(f x))))").unwrap();
         assert_eq!(expected, actual.normalize(false));
+
+        let expected = var!(f);
+        let actual = parser.parse(r"λx.(f x)").unwrap();
+        assert_eq!(expected, actual.normalize(true));
     }
 
     #[test]
