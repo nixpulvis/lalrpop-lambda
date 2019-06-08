@@ -122,8 +122,7 @@ macro_rules! γ {
     };
 }
 
-/// A `HashSet` macro like `vec!`
-///
+/// A `HashSet` macro like `set!`
 ///
 /// ```
 /// # #![feature(box_syntax)]
@@ -134,13 +133,53 @@ macro_rules! γ {
 /// set! { 'a', 'b', 'c' };
 /// # }
 #[macro_export]
-macro_rules! set(
-    { } => {{
-        ::std::collections::HashSet::new()
-    }};
-    { $($value:expr),* } => {{
-        let mut m = ::std::collections::HashSet::new();
-        $(m.insert($value);)*
-        m
-    }};
-);
+macro_rules! set {
+    (@single $($x:tt)*) => (());
+    (@count $($rest:expr),*) => (<[()]>::len(&[$(set!(@single $rest)),*]));
+
+    ($($key:expr,)+) => {
+        set!($($key),+)
+    };
+
+    ($($key:expr),*) => {
+        {
+            let _cap = set!(@count $($key),*);
+            let mut _set = ::std::collections::HashSet::with_capacity(_cap);
+            $(
+                let _ = _set.insert($key);
+            )*
+            _set
+        }
+    };
+}
+
+/// A `HashMap` macro like `vec!`
+///
+/// ```rust
+/// # #![feature(box_syntax)]
+/// # #[macro_use]
+/// # extern crate lalrpop_lambda;
+/// # fn main() {
+/// map! { 'a' => 1, 'b' => 2, 'c' => 3 };
+/// map! { 'a' => "a", 'b' => "b", 'c' => "c" };
+/// # }
+#[macro_export]
+macro_rules! map {
+    (@single $($x:tt)*) => (());
+    (@count $($rest:expr),*) => (<[()]>::len(&[$(map!(@single $rest)),*]));
+
+    ($($key:expr => $value:expr,)+) => {
+        map!($($key => $value),+)
+    };
+
+    ($($key:expr => $value:expr),*) => {
+        {
+            let _cap = map!(@count $($key),*);
+            let mut _map = ::std::collections::HashMap::with_capacity(_cap);
+            $(
+                let _ = _map.insert($key, $value);
+            )*
+            _map
+        }
+    };
+}

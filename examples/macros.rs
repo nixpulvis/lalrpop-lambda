@@ -9,6 +9,7 @@ fn main() {
 
     // Mix in rust bindings with lambda calculus macros using `{binding}`.
     let ω = abs!{x.app!(x,x)};
+    println!("ω: {}", ω);
     // Doesn't do what you might want.
     println!("app!(x,ω): {}", app!(x,ω));
     // But this does ;)
