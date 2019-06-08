@@ -11,7 +11,7 @@ let x = parser.parse("x");
 let id = parser.parse(r"\x.x");
 
 // f ∘ g
-let compose = parser.parse(r"\x.\y.x y"));
+let compose = parser.parse(r"\f.\g.\x.(f (g x))"));
 
 // Print the free variable in this expression.
 let unbound_y = parser.parse(r"\x.x y");
@@ -20,8 +20,12 @@ println!("{}", unbound_y.free_variables());
 // No need for parsing strings at all.
 let id = λ!{x.x};
 let one = λ!{f.λ!{x.γ!(f, x)}};
-println!("(normalize (id one)): {}",
-         app!(id, one).normalize(false));
+
+// Identity application.
+let id = λ!{x.x};
+println!("(id one): {} -> {}",
+         app!({&id}, {&one}),
+         app!({&id}, {&one}).normalize(false));
 
 // Make the Y combinator.
 let ω = parser.parse(r"λx.(x x)");
