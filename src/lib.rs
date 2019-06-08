@@ -313,6 +313,19 @@ mod tests {
         let actual = app!(abs!{f.abs!{x.app!(f,a)}}, abs!{a.x})
                         .normalize(false);
         assert_eq!(expected, actual);
+
+        let expected = abs!{f.abs!{x.app!(f,{
+            let x2 = Expression::Abs(Abstraction(variable!("x''"),
+                                                 box var!("x''")));
+            let fx = app!(app!(f,x),{x2});
+            Expression::Abs(Abstraction(variable!("x'"),
+                                        box fx))
+        })}};
+        let actual = app!(abs!{n.abs!{f.abs!{x.app!(f,app!(n,app!(f,x)))}}},
+                          app!(abs!{n.abs!{f.abs!{x.app!(f,app!(n,app!(f,x)))}}},
+                               abs!{f.abs!{x.x}}));
+        println!("{}: {} -> {}", expected, actual, actual.normalize(false));
+        assert_eq!(expected, actual.normalize(false));
     }
 
     #[test]
