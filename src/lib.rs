@@ -9,6 +9,9 @@ use std::fmt;
 #[macro_use]
 mod macros;
 
+/// Church encoded λ-calculus data types
+pub mod encode;
+
 /// A mutually recursive definition for all lambda expressions
 ///
 /// ```
