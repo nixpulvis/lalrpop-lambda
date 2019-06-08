@@ -1,8 +1,18 @@
 use std::ops::{Add, Mul};
 use crate::{Expression, Abstraction, Application, Variable};
 
-/// Church encoded natural numbers.
-
+/// Church encoded natural numbers
+///
+/// ```
+/// # #![feature(box_syntax)]
+/// # #[macro_use]
+/// # extern crate lalrpop_lambda;
+/// # fn main() {
+/// assert_eq!(0, u64::from(λ!{f.λ!{x.x}}));
+/// assert_eq!(1, u64::from(λ!{f.λ!{x.γ!(f,x)}}));
+/// assert_eq!(3, u64::from(λ!{f.λ!{x.γ!(f,γ!(f,γ!(f,x)))}}));
+/// # }
+/// ```
 impl From<u64> for Expression {
     fn from(n: u64) -> Self {
         let succ = λ!{n.λ!{f.λ!{x.γ!(f, γ!(γ!(n, f), x))}}};
@@ -14,6 +24,18 @@ impl From<u64> for Expression {
     }
 }
 
+/// Convert λ term back to native Rust type
+///
+/// ```
+/// # #![feature(box_syntax)]
+/// # #[macro_use]
+/// # extern crate lalrpop_lambda;
+/// # fn main() {
+/// assert_eq!(0, u64::from(λ!{f.λ!{x.x}}));
+/// assert_eq!(1, u64::from(λ!{f.λ!{x.γ!(f,x)}}));
+/// assert_eq!(3, u64::from(λ!{f.λ!{x.γ!(f,γ!(f,γ!(f,x)))}}));
+/// # }
+/// ```
 impl From<Expression> for u64 {
     fn from(e: Expression) -> u64 {
         // TODO: It would be ideal to use the Fn conversion and a way to "bind" `f` to u64::add.
