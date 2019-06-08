@@ -1,4 +1,4 @@
-#![feature(non_ascii_idents, box_syntax, box_patterns)]
+#![feature(non_ascii_idents, box_syntax, box_patterns, fn_traits, unboxed_closures)]
 
 #[macro_use]
 extern crate lalrpop_util;

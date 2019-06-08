@@ -1,2 +1,5 @@
-/// Church numerals
-pub mod numerals;
+// Functions themselves
+mod function;
+
+// Church numerals
+mod numerals;

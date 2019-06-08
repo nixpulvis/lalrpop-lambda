@@ -1,6 +1,4 @@
 #![feature(non_ascii_idents, box_syntax)]
-
-#[macro_use]
 extern crate lalrpop_lambda;
 
 use lalrpop_lambda::Expression;
