@@ -9,8 +9,8 @@ use std::fmt;
 #[macro_use]
 mod macros;
 
-/// Church encoded λ-calculus data types
-pub mod encode;
+// Church encoded λ-calculus data types
+mod encode;
 
 /// A mutually recursive definition for all lambda expressions
 ///
@@ -163,6 +163,61 @@ impl Expression {
                   .cloned()
                   .collect()
             }
+        }
+    }
+
+    /// ```
+    /// # #![feature(box_syntax)]
+    /// # #[macro_use]
+    /// # extern crate lalrpop_lambda;
+    /// # fn main() {
+    /// let env = map! {
+    ///     variable!(id) => abs!{x.x},
+    /// //     variable!(a) => app!(id,"a".into()),
+    ///     variable!(x) => 1.into(),
+    /// };
+    /// assert_eq!(None, var!(q).resolve::<u64>(&env));
+    /// assert_eq!(Some(1), var!(x).resolve::<u64>(&env));
+    /// // assert_eq!(Some("a"), var!(a).resolve::<String>(&env));
+    /// // assert_eq!(Some((1,2)), var!(id).resolve::<(u64,u64)>(&env)(1,2));
+    /// // assert_eq!(None, abs!{x.x}.resolve::<Fn()>(&env));
+    /// # }
+    /// ```
+    pub fn resolve<T: From<Expression>>(&self, env: &::std::collections::HashMap<Variable,Expression>) -> Option<T>
+        where Expression: std::convert::From<T>
+    {
+        match self {
+            Expression::Var(id) => {
+                if let Some(e) = env.get(id) {
+                    Some(T::from(e.clone()))
+                } else {
+                    None
+                }
+            },
+            Expression::Abs(Abstraction(id, box body)) => {
+                // TODO: Check FV
+                let e = if let Some(r) = body.resolve(env) {
+                    Expression::Abs(Abstraction(id.clone(),
+                                                box Expression::from(r)))
+                } else {
+                    Expression::Abs(Abstraction(id.clone(),
+                                                box body.clone()))
+                };
+                Some(T::from(e.clone()))
+            },
+            Expression::App(Application(box e1, box e2)) => {
+                let r1 = if let Some(t1) = e1.resolve::<T>(env) {
+                    Expression::from(t1)
+                } else {
+                    e1.clone()
+                };
+                let r2 = if let Some(t2) = e2.resolve(env) {
+                    Expression::from(t2)
+                } else {
+                    e2.clone()
+                };
+                Some(T::from(app!({r1}, {r2})))
+            },
         }
     }
 
@@ -372,5 +427,15 @@ mod tests {
                    parser.parse(r"f x").unwrap().free_variables());
         assert_eq!(set! { variable!(x), variable!(y) },
                    parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
+    }
+
+    #[test]
+    fn resolve() {
+        let env = map! {
+            variable!(x) => 1.into(),
+        };
+
+        assert_eq!(None, var!(q).resolve::<u64>(&env));
+        assert_eq!(Some(1), var!(x).resolve::<u64>(&env));
     }
 }
