@@ -16,9 +16,12 @@ impl From<u64> for Expression {
 
 impl From<Expression> for u64 {
     fn from(e: Expression) -> u64 {
-        // TODO: It would be ideal to use the Fn conversion and a way to "bind" `f` to
-        // u64::add.
-        match e {
+        // TODO: It would be ideal to use the Fn conversion and a way to "bind" `f` to u64::add.
+        //
+        // XXX: In fact more than ideal, this really should only be able to return an `Option<u64>`
+        // since there are lambda terms which can evaluate to something which is not a chruch
+        // encoded function.
+        match e.normalize(true) {
             Expression::Var(id) => {
                 if id == variable!(f) { 1 } else { 0 }
             },
