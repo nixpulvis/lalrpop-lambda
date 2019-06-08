@@ -39,7 +39,7 @@ macro_rules! abs {
     {$arg:ident . $body:expr} => {{
         $crate::Expression::Abs(
             $crate::Abstraction(variable!($arg),
-                                box $body.clone()))
+                                box $body.clone().into()))
     }};
 }
 
@@ -54,17 +54,17 @@ macro_rules! app {
     ($func:ident, $arg:expr) => {{
         $crate::Expression::App(
             $crate::Application(box var!($func),
-                                box $arg.clone()))
+                                box $arg.clone().into()))
     }};
     ($func:expr, $arg:ident) => {{
         $crate::Expression::App(
-            $crate::Application(box $func.clone(),
+            $crate::Application(box $func.clone().into(),
                                 box var!($arg)))
     }};
     ($func:expr, $arg:expr) => {{
         $crate::Expression::App(
-            $crate::Application(box $func.clone(),
-                                box $arg.clone()))
+            $crate::Application(box $func.clone().into(),
+                                box $arg.clone().into()))
     }};
 }
 
