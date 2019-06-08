@@ -217,7 +217,6 @@ impl Variable {
     }
 }
 
-
 impl fmt::Display for Expression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -271,6 +270,14 @@ mod tests {
         assert!(ExpressionParser::new().parse(r"(x y)").is_ok());
         assert!(ExpressionParser::new().parse(r"(\x.x y)").is_ok());
     }
+
+    #[test]
+    #[ignore]
+    fn rename() {}
+
+    #[test]
+    #[ignore]
+    fn apply() {}
 
     #[test]
     fn normalize() {
@@ -348,6 +355,10 @@ mod tests {
         assert_eq!(app!(b,b), app!(a,a).replace(&variable!(a), &variable!(b)));
         assert_eq!(abs!{b.b}, abs!{a.a}.replace(&variable!(a), &variable!(b)));
     }
+
+    #[test]
+    #[ignore]
+    fn variables() {}
 
     #[test]
     fn free_variables() {

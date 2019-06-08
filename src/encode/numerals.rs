@@ -58,6 +58,13 @@ impl Mul for Expression {
 mod tests {
     use super::*;
 
+    // // TODO: Move these to tests as we finalize.
+    // dbg!(u64::from(var!(x)));
+    // dbg!(u64::from(var!(f)));
+    // dbg!(u64::from(app!(f,app!(f,x))));
+    // dbg!(u64::from(abs!{f.app!(f,app!(f,x))}));
+    // dbg!(u64::from(abs!{f.abs!{x.app!(f,app!(f,x))}}));
+
     #[test]
     fn u64() {
         assert_eq!(0u64, Expression::from(0).into());
