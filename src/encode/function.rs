@@ -1,4 +1,4 @@
-use crate::Expression;
+use crate::{Expression, Abstraction};
 
 /// Function call support for an `Expression`.
 ///
@@ -20,6 +20,35 @@ impl<T> FnOnce<(T,)> for Expression
 
     extern "rust-call" fn call_once(self, t: (T,)) -> Expression {
         γ!({self},t.0.into())
+    }
+}
+
+impl From<Expression> for fn(u64) -> u64 {
+    fn from(e: Expression) -> Self {
+        match e {
+            Expression::Abs(Abstraction(ref lid, box ref e1)) => {
+                match e1 {
+                    Expression::Var(ref rid) if lid == rid => {
+                        |x| x
+                    },
+                    Expression::Var(_) => {
+                        |_| 0
+                    },
+                    _ => unreachable!(),
+                }
+            },
+            _ => |_| panic!("not a function"),
+        }
+    }
+}
+
+impl From<fn(u64) -> u64> for Expression {
+    fn from(_f: fn(u64) -> u64) -> Self {
+        // TODO: Since we can't call `f` now, we should bind it to an `env` and
+        // add a reference to f here.
+        //
+        // un-η
+        abs!{x.app!(f,x)}
     }
 }
 

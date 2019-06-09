@@ -1,9 +1,13 @@
-#![feature(non_ascii_idents, box_syntax, box_patterns, fn_traits, unboxed_closures)]
+#![feature(non_ascii_idents,
+           box_syntax,
+           box_patterns,
+           fn_traits,
+           unboxed_closures)]
 
 #[macro_use]
 extern crate lalrpop_util;
 
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 use std::fmt;
 
 // The wonderful and easy to use `λ` and `abs!` macros.
@@ -67,21 +71,25 @@ impl Expression {
         unimplemented!()
     }
 
-    /// β-reduction small-step semantics.
+    /// β-reduction small-step semantics (→)
     ///
-    /// η: Local completeness in natural deduction.
+    /// Represents local reducibility in natural deduction.
     ///
-    /// Local reducibility in natural deduction.
+    /// - η: λx.(e1 x) -> e1 whenever x does not appear free in e1
+    ///
+    ///     Represents local completeness in natural deduction.
     pub fn apply(&self, η: bool) -> Self {
         dbg!(η);
         unimplemented!()
     }
 
-    /// Big-step natural semantics.
+    /// Big-step natural semantics (⇓)
     ///
-    /// η: Global completeness in natural deduction.
+    /// Represents global reducibility in natural deduction.
     ///
-    /// Global reducibility in natural deduction.
+    /// TODO: Reduction strategy.
+    ///
+    /// - η: (see `Expression::apply`)
     ///
     /// ```
     /// let parser = lalrpop_lambda::parse::ExpressionParser::new();
@@ -95,11 +103,11 @@ impl Expression {
         match self {
             Expression::Var(_) => self.clone(),
             Expression::Abs(Abstraction(id, box body)) => {
+                // η-reduction
                 if let Expression::App(Application(box e1,
                                                    box Expression::Var(x)))
                    = body
                 {
-                    // λx.(e1 x) -> e1 whenever x does not appear free in e1.
                     if η && id == x && !e1.free_variables().contains(&id) {
                         return e1.normalize(η);
                     }
@@ -111,11 +119,11 @@ impl Expression {
                 match e1.normalize(η) {
                     Expression::Abs(Abstraction(id, body)) => {
                         // (λx.t) s → t[x := s]
-                        // TODO: This should be the job of `apply` (aka →).
                         body.substitute(&e2, &id).normalize(η)
                     },
                     e @ _ => {
-                        Expression::App(Application(box e.normalize(η), box e2.normalize(η)))
+                        Expression::App(Application(box e.normalize(η),
+                                                    box e2.normalize(η)))
                     }
                 }
             },
@@ -177,50 +185,37 @@ impl Expression {
     /// # fn main() {
     /// let env = map! {
     ///     variable!(id) => abs!{x.x},
-    /// //     variable!(a) => app!(id,"a".into()),
+    ///     variable!(ad) => abs!{x.y},
     ///     variable!(x) => 1.into(),
     /// };
-    /// assert_eq!(None, var!(q).resolve::<u64>(&env));
-    /// assert_eq!(Some(1), var!(x).resolve::<u64>(&env));
-    /// // assert_eq!(Some("a"), var!(a).resolve::<String>(&env));
-    /// // assert_eq!(Some((1,2)), var!(id).resolve::<(u64,u64)>(&env)(1,2));
-    /// // assert_eq!(None, abs!{x.x}.resolve::<Fn()>(&env));
+    /// assert_eq!(var!(q), var!(q).resolve(&env));
+    /// assert_eq!(1u64, var!(x).resolve(&env).into());
+    ///
+    /// // Works with functions too!
+    /// let id: fn(u64) -> u64 = var!(id).resolve(&env).into();
+    /// assert_eq!(1, id(1));
+    /// let ad: fn(u64) -> u64 = var!(ad).resolve(&env).into();
+    /// assert_eq!(u64::from(var!(y)), ad(0));
+    /// assert_eq!(u64::from(var!(y)), ad(1));
     /// # }
     /// ```
-    pub fn resolve<T: From<Expression>>(&self, env: &::std::collections::HashMap<Variable,Expression>) -> Option<T>
-        where Expression: std::convert::From<T>
+    pub fn resolve(&self, env: &HashMap<Variable,Expression>) -> Expression
     {
         match self {
             Expression::Var(id) => {
                 if let Some(e) = env.get(id) {
-                    Some(T::from(e.clone()))
+                    e.clone()
                 } else {
-                    None
+                    self.clone()
                 }
             },
             Expression::Abs(Abstraction(id, box body)) => {
                 // TODO: Check FV
-                let e = if let Some(r) = body.resolve(env) {
-                    Expression::Abs(Abstraction(id.clone(),
-                                                box Expression::from(r)))
-                } else {
-                    Expression::Abs(Abstraction(id.clone(),
-                                                box body.clone()))
-                };
-                Some(T::from(e.clone()))
+                Expression::Abs(Abstraction(id.clone(),
+                                            box body.resolve(env)))
             },
             Expression::App(Application(box e1, box e2)) => {
-                let r1 = if let Some(t1) = e1.resolve::<T>(env) {
-                    Expression::from(t1)
-                } else {
-                    e1.clone()
-                };
-                let r2 = if let Some(t2) = e2.resolve(env) {
-                    Expression::from(t2)
-                } else {
-                    e2.clone()
-                };
-                Some(T::from(app!({r1}, {r2})))
+                app!({e1.resolve(env)}, {e2.resolve(env)})
             },
         }
     }
@@ -300,7 +295,7 @@ impl fmt::Display for Variable {
 
 
 lalrpop_mod! {
-    /// Parse lambda expression ASTs
+    // Parse lambda expressions
     pub parse
 }
 
@@ -437,10 +432,12 @@ mod tests {
     #[test]
     fn resolve() {
         let env = map! {
-            variable!(x) => 1.into(),
+            variable!(n) => 1.into(),
         };
 
-        assert_eq!(None, var!(q).resolve::<u64>(&env));
-        assert_eq!(Some(1), var!(x).resolve::<u64>(&env));
+        assert_eq!(var!(q), var!(q).resolve(&env));
+        assert_eq!(1u64, var!(n).resolve(&env).into());
+
+        // TODO: Add more, starting with examples/env.rs.
     }
 }

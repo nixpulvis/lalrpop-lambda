@@ -5,22 +5,19 @@ extern crate lalrpop_lambda;
 use lalrpop_lambda::Expression;
 
 macro_rules! resolve {
-    ($t:ty: $e:expr, $env:expr) => {{
-        if let Some(r) = $e.resolve::<$t>($env) {
-            println!("{} -r> {}", $e, r);
-            r
-        } else {
-            println!("{}", $e);
-            $e.into()
-        }
-    }}
+    ($expr:expr, $env:expr) => {
+        println!("{} -r> {} -> {}",
+                 $expr,
+                 $expr.resolve($env),
+                 $expr.resolve($env).normalize(false));
+    }
 }
 
 fn main() {
     let env = map! {
-        variable!(x) => var!(x),
-        variable!(n) => Expression::from(1),
         variable!(i) => abs!{x.x},
+        variable!(n) => Expression::from(1),
+        variable!(x) => var!(x),
     };
 
     println!("GLOBAL ENV");
@@ -29,20 +26,14 @@ fn main() {
     }
     println!();
 
-    resolve!(u64: var!(q), &env);
-    resolve!(u64: var!(n), &env);
-
-    // resolve!(Fn(): abs!{a.a}, &env);
-
-    resolve!(Expression: var!(x), &env);
-    resolve!(Expression: var!(x), &env);
-    resolve!(Expression: var!(x), &env);
-    resolve!(Expression: var!(n), &env);
-    resolve!(Expression: var!(i), &env);
-    resolve!(Expression: abs!{a.a}, &env);
-    resolve!(Expression: abs!{a.n}, &env);
-    resolve!(Expression: app!(a,x), &env);
-    resolve!(Expression: app!(x,a), &env);
-    resolve!(Expression: app!(x,x), &env);
-    resolve!(Expression: app!(i,n), &env);
+    resolve!(var!(i), &env);
+    resolve!(var!(n), &env);
+    resolve!(var!(x), &env);
+    resolve!(var!(q), &env);
+    resolve!(abs!{a.a}, &env);
+    resolve!(abs!{a.n}, &env);
+    resolve!(app!(a,n), &env);
+    resolve!(app!(n,a), &env);
+    resolve!(app!(n,n), &env);
+    resolve!(app!(i,n), &env);
 }
