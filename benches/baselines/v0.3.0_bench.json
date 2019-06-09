@@ -1,0 +1,831 @@
+{
+  "name": "new",
+  "benchmarks": {
+    "native addition/0": {
+      "baseline": "new",
+      "fullname": "new/native addition/0",
+      "criterion_benchmark_v1": {
+        "group_id": "native addition",
+        "function_id": null,
+        "value_str": "0",
+        "throughput": null,
+        "full_id": "native addition/0",
+        "directory_name": "native addition/0"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2968468484936433,
+            "upper_bound": 0.29981451390539515
+          },
+          "point_estimate": 0.2980689101273462,
+          "standard_error": 0.0007732078076600166
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2963090448367719,
+            "upper_bound": 0.29644436136993063
+          },
+          "point_estimate": 0.29636802229825265,
+          "standard_error": 0.000035282650295655695
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0002254411781712316,
+            "upper_bound": 0.0004287219866189192
+          },
+          "point_estimate": 0.00030633345954119817,
+          "standard_error": 0.00005164797710510594
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.29671960655889934,
+            "upper_bound": 0.30091325223318677
+          },
+          "point_estimate": 0.2983809343621838,
+          "standard_error": 0.001112998300797706
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0019952290708290304,
+            "upper_bound": 0.012467394399385635
+          },
+          "point_estimate": 0.007780645055749648,
+          "standard_error": 0.0029524566947364372
+        }
+      }
+    },
+    "native addition/1": {
+      "baseline": "new",
+      "fullname": "new/native addition/1",
+      "criterion_benchmark_v1": {
+        "group_id": "native addition",
+        "function_id": null,
+        "value_str": "1",
+        "throughput": null,
+        "full_id": "native addition/1",
+        "directory_name": "native addition/1"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2974932569243279,
+            "upper_bound": 0.30142455551001746
+          },
+          "point_estimate": 0.29916448791189754,
+          "standard_error": 0.001018035683551917
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2966614004043141,
+            "upper_bound": 0.29684766843879223
+          },
+          "point_estimate": 0.29674107319979465,
+          "standard_error": 0.00005100175563118712
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0002549709505649339,
+            "upper_bound": 0.0005400208952110087
+          },
+          "point_estimate": 0.0004181377497412315,
+          "standard_error": 0.00007269021666376222
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2971608543346816,
+            "upper_bound": 0.3002425134055753
+          },
+          "point_estimate": 0.2984892274903682,
+          "standard_error": 0.0007897881148983396
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.003405162674502418,
+            "upper_bound": 0.015792138091545085
+          },
+          "point_estimate": 0.01021602855732574,
+          "standard_error": 0.0032816176989411577
+        }
+      }
+    },
+    "native addition/16": {
+      "baseline": "new",
+      "fullname": "new/native addition/16",
+      "criterion_benchmark_v1": {
+        "group_id": "native addition",
+        "function_id": null,
+        "value_str": "16",
+        "throughput": null,
+        "full_id": "native addition/16",
+        "directory_name": "native addition/16"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.29703259415180594,
+            "upper_bound": 0.30458481999513154
+          },
+          "point_estimate": 0.2999152911576112,
+          "standard_error": 0.0020255055362622867
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.296028293280678,
+            "upper_bound": 0.2962186846897828
+          },
+          "point_estimate": 0.29609128878637136,
+          "standard_error": 0.00004743259148512791
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.00008149309004046841,
+            "upper_bound": 0.00034947330618364224
+          },
+          "point_estimate": 0.0001685614645881633,
+          "standard_error": 0.0000674481797812517
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.296694330189109,
+            "upper_bound": 0.29972462396528426
+          },
+          "point_estimate": 0.2980324283787414,
+          "standard_error": 0.0007772907743877836
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0035639092472373513,
+            "upper_bound": 0.03375769020935149
+          },
+          "point_estimate": 0.020319324150107627,
+          "standard_error": 0.009467540875262671
+        }
+      }
+    },
+    "native addition/2": {
+      "baseline": "new",
+      "fullname": "new/native addition/2",
+      "criterion_benchmark_v1": {
+        "group_id": "native addition",
+        "function_id": null,
+        "value_str": "2",
+        "throughput": null,
+        "full_id": "native addition/2",
+        "directory_name": "native addition/2"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2970807937744729,
+            "upper_bound": 0.3003533505568965
+          },
+          "point_estimate": 0.29847613972340964,
+          "standard_error": 0.0008471106951294426
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2962759008983252,
+            "upper_bound": 0.29686478522322357
+          },
+          "point_estimate": 0.29654257081374513,
+          "standard_error": 0.0001430952117779159
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.00042556487685459384,
+            "upper_bound": 0.0010140397355954752
+          },
+          "point_estimate": 0.0007030435548050374,
+          "standard_error": 0.00014045004917796367
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2972728090254777,
+            "upper_bound": 0.3030484171817896
+          },
+          "point_estimate": 0.2994483113779417,
+          "standard_error": 0.0015623364896958836
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0022022166404387527,
+            "upper_bound": 0.012921950064696168
+          },
+          "point_estimate": 0.008518972608538606,
+          "standard_error": 0.0028147965992940107
+        }
+      }
+    },
+    "native addition/32": {
+      "baseline": "new",
+      "fullname": "new/native addition/32",
+      "criterion_benchmark_v1": {
+        "group_id": "native addition",
+        "function_id": null,
+        "value_str": "32",
+        "throughput": null,
+        "full_id": "native addition/32",
+        "directory_name": "native addition/32"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.297275827552392,
+            "upper_bound": 0.30013184095846446
+          },
+          "point_estimate": 0.29851096988470344,
+          "standard_error": 0.0007397907661081399
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2966867798893299,
+            "upper_bound": 0.2969044243893952
+          },
+          "point_estimate": 0.2967735926061519,
+          "standard_error": 0.0000570089318612994
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0003309350474998074,
+            "upper_bound": 0.0006248792135043663
+          },
+          "point_estimate": 0.0004845653264040483,
+          "standard_error": 0.0000780768625908119
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2971032978333613,
+            "upper_bound": 0.3025042677653186
+          },
+          "point_estimate": 0.29932444397541724,
+          "standard_error": 0.0014132132256441975
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0027480440668540716,
+            "upper_bound": 0.011290301535211246
+          },
+          "point_estimate": 0.007447559573931257,
+          "standard_error": 0.002232602955317096
+        }
+      }
+    },
+    "native addition/4": {
+      "baseline": "new",
+      "fullname": "new/native addition/4",
+      "criterion_benchmark_v1": {
+        "group_id": "native addition",
+        "function_id": null,
+        "value_str": "4",
+        "throughput": null,
+        "full_id": "native addition/4",
+        "directory_name": "native addition/4"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2966483633133743,
+            "upper_bound": 0.2999014682361953
+          },
+          "point_estimate": 0.2980454326978392,
+          "standard_error": 0.000841302596453012
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2960522229086636,
+            "upper_bound": 0.2961609506703249
+          },
+          "point_estimate": 0.29609173697738067,
+          "standard_error": 0.00002747845366577081
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.00010453914475976706,
+            "upper_bound": 0.0002269633664783
+          },
+          "point_estimate": 0.00016010171203138603,
+          "standard_error": 0.00003019504692412464
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.29652830364262145,
+            "upper_bound": 0.30120607442341485
+          },
+          "point_estimate": 0.2983130531577798,
+          "standard_error": 0.001252348934888083
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.0021139999809323,
+            "upper_bound": 0.012823699698046956
+          },
+          "point_estimate": 0.008445058695073207,
+          "standard_error": 0.0027015276518215373
+        }
+      }
+    },
+    "native addition/8": {
+      "baseline": "new",
+      "fullname": "new/native addition/8",
+      "criterion_benchmark_v1": {
+        "group_id": "native addition",
+        "function_id": null,
+        "value_str": "8",
+        "throughput": null,
+        "full_id": "native addition/8",
+        "directory_name": "native addition/8"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2966275574721007,
+            "upper_bound": 0.3004758779076329
+          },
+          "point_estimate": 0.2981698109443507,
+          "standard_error": 0.001013961769455673
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2960783413290481,
+            "upper_bound": 0.29615919202533053
+          },
+          "point_estimate": 0.296108471868778,
+          "standard_error": 0.00002065821411138976
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.00010137151395098546,
+            "upper_bound": 0.0001996008745075391
+          },
+          "point_estimate": 0.0001438057706566066,
+          "standard_error": 0.000026051713001064855
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.2966422481588065,
+            "upper_bound": 0.30105135041024694
+          },
+          "point_estimate": 0.2985043341611148,
+          "standard_error": 0.001145339020403624
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 0.002346781134368851,
+            "upper_bound": 0.016538811345455227
+          },
+          "point_estimate": 0.010162159068917148,
+          "standard_error": 0.00418112059410067
+        }
+      }
+    },
+    "λ-expression addition/0": {
+      "baseline": "new",
+      "fullname": "new/λ-expression addition/0",
+      "criterion_benchmark_v1": {
+        "group_id": "λ-expression addition",
+        "function_id": null,
+        "value_str": "0",
+        "throughput": null,
+        "full_id": "λ-expression addition/0",
+        "directory_name": "λ-expression addition/0"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 13449.443388550942,
+            "upper_bound": 13555.744922434284
+          },
+          "point_estimate": 13496.275874948264,
+          "standard_error": 27.35214778416823
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 13406.31446414182,
+            "upper_bound": 13430.824033272664
+          },
+          "point_estimate": 13421.207743408457,
+          "standard_error": 5.913463768724566
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 23.306377088076676,
+            "upper_bound": 45.40485672779425
+          },
+          "point_estimate": 36.32231699279966,
+          "standard_error": 5.775624284504741
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 13438.572144861288,
+            "upper_bound": 13628.663197279877
+          },
+          "point_estimate": 13515.054902862605,
+          "standard_error": 50.28906597420155
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 129.4971209105263,
+            "upper_bound": 408.47714957406214
+          },
+          "point_estimate": 274.74619908142836,
+          "standard_error": 75.60252417182761
+        }
+      }
+    },
+    "λ-expression addition/1": {
+      "baseline": "new",
+      "fullname": "new/λ-expression addition/1",
+      "criterion_benchmark_v1": {
+        "group_id": "λ-expression addition",
+        "function_id": null,
+        "value_str": "1",
+        "throughput": null,
+        "full_id": "λ-expression addition/1",
+        "directory_name": "λ-expression addition/1"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 22032.35135384203,
+            "upper_bound": 22311.331190225337
+          },
+          "point_estimate": 22154.54140340484,
+          "standard_error": 71.68197757581329
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 21963.818055555555,
+            "upper_bound": 21971.856307258633
+          },
+          "point_estimate": 21967.231196581197,
+          "standard_error": 1.9589172227392468
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 11.18555914508616,
+            "upper_bound": 19.52331038509972
+          },
+          "point_estimate": 16.061021706890156,
+          "standard_error": 2.088810251537709
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 21989.711499063185,
+            "upper_bound": 22272.396654948556
+          },
+          "point_estimate": 22104.353070620495,
+          "standard_error": 74.1513907698145
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 290.66482415234725,
+            "upper_bound": 1048.4154706111842
+          },
+          "point_estimate": 719.2075070528622,
+          "standard_error": 192.42737433454823
+        }
+      }
+    },
+    "λ-expression addition/16": {
+      "baseline": "new",
+      "fullname": "new/λ-expression addition/16",
+      "criterion_benchmark_v1": {
+        "group_id": "λ-expression addition",
+        "function_id": null,
+        "value_str": "16",
+        "throughput": null,
+        "full_id": "λ-expression addition/16",
+        "directory_name": "λ-expression addition/16"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 412688.4729891293,
+            "upper_bound": 417838.82914217864
+          },
+          "point_estimate": 415026.3712592694,
+          "standard_error": 1321.450686255857
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 410607.7466094033,
+            "upper_bound": 410832.15012368583
+          },
+          "point_estimate": 410650.9106060606,
+          "standard_error": 59.9685133007851
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 223.9008251745031,
+            "upper_bound": 496.77364758318936
+          },
+          "point_estimate": 311.86784201566525,
+          "standard_error": 66.72033379729751
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 411674.5508292543,
+            "upper_bound": 415239.8957054938
+          },
+          "point_estimate": 413285.14755923353,
+          "standard_error": 914.4441412365476
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 7488.577039016398,
+            "upper_bound": 17910.407834841233
+          },
+          "point_estimate": 13283.1709721034,
+          "standard_error": 2652.6960868847145
+        }
+      }
+    },
+    "λ-expression addition/2": {
+      "baseline": "new",
+      "fullname": "new/λ-expression addition/2",
+      "criterion_benchmark_v1": {
+        "group_id": "λ-expression addition",
+        "function_id": null,
+        "value_str": "2",
+        "throughput": null,
+        "full_id": "λ-expression addition/2",
+        "directory_name": "λ-expression addition/2"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 32861.60347195717,
+            "upper_bound": 33390.167925269394
+          },
+          "point_estimate": 33093.77925681181,
+          "standard_error": 136.11088228956922
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 32684.714403600898,
+            "upper_bound": 32736.470430107525
+          },
+          "point_estimate": 32719.647099192793,
+          "standard_error": 13.91090300183185
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 78.35166225414126,
+            "upper_bound": 144.98949330267604
+          },
+          "point_estimate": 112.85152322176866,
+          "standard_error": 16.868616388083712
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 32773.84658960515,
+            "upper_bound": 33241.935849819274
+          },
+          "point_estimate": 32972.814606081694,
+          "standard_error": 121.561459400322
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 541.0552766722783,
+            "upper_bound": 1990.8429086743072
+          },
+          "point_estimate": 1369.0084500725852,
+          "standard_error": 373.46146252476063
+        }
+      }
+    },
+    "λ-expression addition/32": {
+      "baseline": "new",
+      "fullname": "new/λ-expression addition/32",
+      "criterion_benchmark_v1": {
+        "group_id": "λ-expression addition",
+        "function_id": null,
+        "value_str": "32",
+        "throughput": null,
+        "full_id": "λ-expression addition/32",
+        "directory_name": "λ-expression addition/32"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 1408541.2890109746,
+            "upper_bound": 1422880.1625501968
+          },
+          "point_estimate": 1415160.637315932,
+          "standard_error": 3673.979222997814
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 1402206.066666667,
+            "upper_bound": 1403709.4047619049
+          },
+          "point_estimate": 1402794.5511904764,
+          "standard_error": 356.30215858853774
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 2636.1554144026177,
+            "upper_bound": 5321.216823364671
+          },
+          "point_estimate": 4100.105962760796,
+          "standard_error": 701.8382113562593
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 1406443.225470772,
+            "upper_bound": 1420864.0650071786
+          },
+          "point_estimate": 1412637.77345648,
+          "standard_error": 3760.796398785651
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 23902.71680683939,
+            "upper_bound": 47322.099934590835
+          },
+          "point_estimate": 36936.647888004954,
+          "standard_error": 5997.233896050246
+        }
+      }
+    },
+    "λ-expression addition/4": {
+      "baseline": "new",
+      "fullname": "new/λ-expression addition/4",
+      "criterion_benchmark_v1": {
+        "group_id": "λ-expression addition",
+        "function_id": null,
+        "value_str": "4",
+        "throughput": null,
+        "full_id": "λ-expression addition/4",
+        "directory_name": "λ-expression addition/4"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 61153.60752645869,
+            "upper_bound": 62527.283763870786
+          },
+          "point_estimate": 61773.95857713562,
+          "standard_error": 352.3513592188564
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 60601.502521008406,
+            "upper_bound": 60642.39956958393
+          },
+          "point_estimate": 60625.619453044375,
+          "standard_error": 10.667326522819192
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 65.37024793447279,
+            "upper_bound": 152.5597123901359
+          },
+          "point_estimate": 96.93416983974528,
+          "standard_error": 20.848799467836837
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 60871.17685548583,
+            "upper_bound": 61981.24194778028
+          },
+          "point_estimate": 61333.74746129574,
+          "standard_error": 287.4252267957783
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 1776.121808989942,
+            "upper_bound": 4904.638476474027
+          },
+          "point_estimate": 3542.5899519992336,
+          "standard_error": 791.2978950575418
+        }
+      }
+    },
+    "λ-expression addition/8": {
+      "baseline": "new",
+      "fullname": "new/λ-expression addition/8",
+      "criterion_benchmark_v1": {
+        "group_id": "λ-expression addition",
+        "function_id": null,
+        "value_str": "8",
+        "throughput": null,
+        "full_id": "λ-expression addition/8",
+        "directory_name": "λ-expression addition/8"
+      },
+      "criterion_estimates_v1": {
+        "Mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 142336.4996254305,
+            "upper_bound": 144030.23561268055
+          },
+          "point_estimate": 143106.76805599275,
+          "standard_error": 433.72120854000894
+        },
+        "Median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 141762.5974851788,
+            "upper_bound": 141851.92261904763
+          },
+          "point_estimate": 141794.19977324264,
+          "standard_error": 25.28157656489059
+        },
+        "MedianAbsDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 106.4318448146757,
+            "upper_bound": 200.434860462588
+          },
+          "point_estimate": 134.9374721235973,
+          "standard_error": 25.03407228543716
+        },
+        "Slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 142008.04124203886,
+            "upper_bound": 143368.54007868798
+          },
+          "point_estimate": 142612.91705714707,
+          "standard_error": 348.563886654758
+        },
+        "StdDev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 2391.8979703058926,
+            "upper_bound": 5863.020890119689
+          },
+          "point_estimate": 4352.079543536833,
+          "standard_error": 882.4143314382903
+        }
+      }
+    }
+  }
+}
