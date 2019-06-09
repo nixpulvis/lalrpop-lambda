@@ -1,4 +1,4 @@
-use crate::{Expression, Abstraction};
+use crate::Expression;
 
 /// Function call support for an `Expression`.
 ///
