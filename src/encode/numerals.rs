@@ -7,10 +7,12 @@ use crate::{Expression, Abstraction, Application, Variable};
 /// # #![feature(box_syntax)]
 /// # #[macro_use]
 /// # extern crate lalrpop_lambda;
+/// use lalrpop_lambda::Expression;
+///
 /// # fn main() {
-/// assert_eq!(0, u64::from(λ!{f.λ!{x.x}}));
-/// assert_eq!(1, u64::from(λ!{f.λ!{x.γ!(f,x)}}));
-/// assert_eq!(3, u64::from(λ!{f.λ!{x.γ!(f,γ!(f,γ!(f,x)))}}));
+/// assert_eq!(λ!{f.λ!{x.x}}, Expression::from(0));
+/// assert_eq!(λ!{f.λ!{x.γ!(f,x)}}, Expression::from(1));
+/// assert_eq!(λ!{f.λ!{x.γ!(f,γ!(f,γ!(f,x)))}}, Expression::from(3));
 /// # }
 /// ```
 impl From<u64> for Expression {
@@ -57,6 +59,17 @@ impl From<Expression> for u64 {
     }
 }
 
+/// ```
+/// # #![feature(box_syntax)]
+/// # #[macro_use]
+/// # extern crate lalrpop_lambda;
+/// # fn main() {
+/// let one = λ!{f.λ!{x.γ!(f,x)}};
+/// let two = one.clone() + one.clone();
+/// assert_eq!(2, u64::from(two.clone()));
+/// assert_eq!(4, u64::from(two.clone() + two.clone()));
+/// # }
+/// ```
 impl Add for Expression {
     type Output = Self;
 
@@ -66,6 +79,17 @@ impl Add for Expression {
     }
 }
 
+/// ```
+/// # #![feature(box_syntax)]
+/// # #[macro_use]
+/// # extern crate lalrpop_lambda;
+/// # fn main() {
+/// let one = λ!{f.λ!{x.γ!(f,x)}};
+/// let two = one.clone() + one.clone();
+/// assert_eq!(1, u64::from(one.clone() * one.clone()));
+/// assert_eq!(4, u64::from(two.clone() * two.clone()));
+/// # }
+/// ```
 impl Mul for Expression {
     type Output = Self;
 
