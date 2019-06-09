@@ -102,6 +102,7 @@ impl Mul for Expression {
 
 #[cfg(test)]
 mod tests {
+    use crate::parse::ExpressionParser;
     use super::*;
 
     // // TODO: Move these to tests as we finalize.
@@ -115,6 +116,21 @@ mod tests {
     fn u64() {
         assert_eq!(0u64, Expression::from(0).into());
         assert_eq!(5u64, Expression::from(5).into());
+    }
+
+    #[test]
+    fn zero() {
+        // TODO: Should this be correct? What to do about smaller terms?
+        assert_eq!(0, u64::from(λ!{x.x}));
+    }
+
+
+    #[test]
+    fn one() {
+        let ω = ExpressionParser::new().parse("λx.x x").unwrap();
+
+        // TODO: Should this be correct? What to do about smaller terms?
+        assert_eq!(1, u64::from(ω(Expression::from(1))));
     }
 
     #[test]
