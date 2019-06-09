@@ -9,35 +9,37 @@
 //! between Rust and λ-expressions. These are all defined in `mod encode`.
 //!
 //! ```
-//! # #![feature(box_syntax)]
-//! # #[macro_use]
-//! # extern crate lalrpop_lambda;
-//! # fn main() {
-//! use lalrpop_lambda::Expression;
-//! use lalrpop_lambda::parse::ExpressionParser;
+//! #![feature(box_syntax)]
 //!
-//! // Define an expression parser, for shortest lambda term strings.
-//! let parser = ExpressionParser::new();
+//! #[macro_use]
+//! extern crate lalrpop_lambda;
 //!
-//! // The successor Church numeral function.
-//! let add1 = parser.parse("λn.λf.λx.f (n f x)").unwrap();
+//! fn main() {
+//!     use lalrpop_lambda::Expression;
+//!     use lalrpop_lambda::parse::ExpressionParser;
 //!
-//! // The first two church numerals.
-//! let zero = Expression::from(0u64);
-//! let one = app!({add1},{zero}).normalize(false);
-//! assert_eq!(Expression::from(1u64), one);
+//!     // Define an expression parser, for shortest lambda term strings.
+//!     let parser = ExpressionParser::new();
 //!
-//! // Use a parsed identity function with other `Experssion`s.
-//! let id = parser.parse("λx.x").unwrap();
-//! let id_one = id(Expression::from(1u64)).normalize(false);
-//! assert_eq!(one, id_one);
+//!     // The successor Church numeral function.
+//!     let add1 = parser.parse("λn.λf.λx.f (n f x)").unwrap();
 //!
-//! // Use a parsed identity function with Rust `u64` numbers!
-//! // NOTE: This is a WIP.
-//! let id = parser.parse("λx.x").unwrap();
-//! let u64_id = <fn(u64) -> u64>::from(id.clone());
-//! assert_eq!(1, u64_id(1));
-//! # }
+//!     // The first two church numerals.
+//!     let zero = Expression::from(0u64);
+//!     let one = app!({add1},{zero}).normalize(false);
+//!     assert_eq!(Expression::from(1u64), one);
+//!
+//!     // Use a parsed identity function with other `Experssion`s.
+//!     let id = parser.parse("λx.x").unwrap();
+//!     let id_one = id(Expression::from(1u64)).normalize(false);
+//!     assert_eq!(one, id_one);
+//!
+//!     // Use a parsed identity function with Rust `u64` numbers!
+//!     // NOTE: This is a WIP.
+//!     let id = parser.parse("λx.x").unwrap();
+//!     let u64_id = <fn(u64) -> u64>::from(id.clone());
+//!     assert_eq!(1, u64_id(1));
+//! }
 //! ```
 #![feature(non_ascii_idents,
            box_syntax,
