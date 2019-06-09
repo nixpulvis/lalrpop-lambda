@@ -90,7 +90,7 @@ macro_rules! λ {
     }};
 }
 
-/// Theory is nothing without application.
+/// Theory is nothing without application
 ///
 /// This is a more terse form of `app!`. The main difference between these macros is that this
 /// macro wraps it's parts in `var!` expressions as needed. Whereas with `app!` we can use the
@@ -122,7 +122,7 @@ macro_rules! γ {
     };
 }
 
-/// A `HashSet` macro like `set!`
+/// A `HashSet` macro like `map!`
 ///
 /// ```
 /// # #![feature(box_syntax)]
