@@ -1,5 +1,7 @@
 # λ-calculus Parser (using LALRPOP)
 
+[![Build Status](https://travis-ci.org/nixpulvis/lalrpop-lambda.svg?branch=master)](https://travis-ci.org/nixpulvis/lalrpop-lambda)
+
 ```rust
 use lalrpop_lambda::lambda::ExpressionParser;
 let parser = ExpressionParser::new();
