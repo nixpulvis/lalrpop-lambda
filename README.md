@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nixpulvis/lalrpop-lambda.svg?branch=master)](https://travis-ci.org/nixpulvis/lalrpop-lambda)
 [![Crates.io Version](https://img.shields.io/crates/v/lalrpop-lambda.svg?color=%238035b9)](https://crates.io/crates/lalrpop-lambda)
-[![docs.rs](https://img.shields.io/badge/docs.rs-0.x.x-lightgrey.svg)](https://docs.rs/lalrpop-lambda/0.2.0/lalrpop_lambda)
+[![docs.rs](https://img.shields.io/badge/docs.rs-0.x.x-lightgrey.svg)](https://docs.rs/lalrpop-lambda)
 
 ```rust
 use lalrpop_lambda::lambda::ExpressionParser;
