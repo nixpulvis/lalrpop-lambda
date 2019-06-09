@@ -2,7 +2,7 @@ use crate::{Expression, Variable, Abstraction, Application};
 
 grammar;
 
-pub Id: Variable = r"[a-zA-Z0-9]+" => {
+pub Variable: Variable = r"[a-zA-Z0-9]+" => {
     Variable(<>.to_string())
 };
 
@@ -12,7 +12,7 @@ pub Expression: Expression = {
 }
 
 Abstraction: Expression = {
-    Lambda <id:Id> "." <term:Expression> => {
+    Lambda <id:Variable> "." <term:Expression> => {
         Expression::Abs(Abstraction(id, box term))
     }
 }
@@ -27,7 +27,7 @@ Application: Expression = {
 }
 
 Terminal: Expression = {
-    Id => Expression::Var(<>),
+    Variable => Expression::Var(<>),
     "(" <e:Expression> ")" => e,
 }
 
