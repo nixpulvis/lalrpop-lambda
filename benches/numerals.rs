@@ -2,7 +2,7 @@
 extern crate criterion;
 extern crate lalrpop_lambda;
 
-use criterion::{Criterion, Fun};
+use criterion::Criterion;
 use lalrpop_lambda::Expression;
 
 fn compare_benchmark(c: &mut Criterion) {
