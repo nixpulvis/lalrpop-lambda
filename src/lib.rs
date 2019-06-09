@@ -6,10 +6,14 @@ extern crate lalrpop_util;
 use std::collections::HashSet;
 use std::fmt;
 
+// The wonderful and easy to use `λ` and `abs!` macros.
+//
+// As well as an implementation of `set!` and `map!` taken from:
+// [bluss/maplit](https://github.com/bluss/maplit).
 #[macro_use]
 mod macros;
 
-// Church encoded λ-calculus data types
+// Church encoded λ-calculus data types, and conversions to Rust data types
 mod encode;
 
 /// A mutually recursive definition for all lambda expressions
