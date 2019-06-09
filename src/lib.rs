@@ -1,10 +1,12 @@
 //! This project started as just the parse.lalrpop and AST, but grew into a bit
 //! more.
 //!
-//! - The `Expression` is the type of all λ-calculus programs
-//! - `λ!`/`abs!`, `γ!`/`app!`, `var!` macros all return `Expression` types
-//! - `mod parse` defines a parser returning `Expression`s from `&str`s
+//! Evaluation of λ-expressions is _currently_ done in a single big-step
+//! semantics [`Expression::normalize`] function. The reduction strategy is
+//! so far only configurable by η.
 //!
+//! See the `impl From` items under [`Expression`]. These define conversions
+//! between Rust and λ-expressions. These are all defined in `mod encode`.
 //!
 //! ```
 //! # #![feature(box_syntax)]
@@ -334,7 +336,7 @@ impl fmt::Display for Variable {
 
 
 lalrpop_mod! {
-    // Parse lambda expressions
+    /// Parse λ-expressions
     pub parse
 }
 
