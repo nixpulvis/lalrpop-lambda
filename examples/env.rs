@@ -2,7 +2,8 @@
 
 #[macro_use]
 extern crate lalrpop_lambda;
-use lalrpop_lambda::Expression;
+
+use std::collections::HashMap;
 
 macro_rules! resolve {
     ($expr:expr, $env:expr) => {
@@ -14,19 +15,13 @@ macro_rules! resolve {
 }
 
 fn main() {
-    let env = map! {
-        variable!(i) => abs!{x.x},
-        variable!(n) => Expression::from(1),
-        variable!(x) => var!(x),
-    };
-
-    println!("GLOBAL ENV");
+    let mut env = HashMap::new();
+    env.insert(variable!(i), abs!{x.x});
+    env.insert(variable!(n), 1.into());
+    env.insert(variable!(x), var!(x));
     for (v, e) in &env {
         println!("{} := {}", v, e);
     }
-    println!();
-
-    resolve!(var!(i), &env);
     resolve!(var!(n), &env);
     resolve!(var!(x), &env);
     resolve!(var!(q), &env);

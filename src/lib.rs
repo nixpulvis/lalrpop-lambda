@@ -225,12 +225,14 @@ impl Expression {
     /// # #![feature(box_syntax)]
     /// # #[macro_use]
     /// # extern crate lalrpop_lambda;
+    /// use std::collections::HashMap;
+    ///
     /// # fn main() {
-    /// let env = map! {
-    ///     variable!(id) => abs!{x.x},
-    ///     variable!(ad) => abs!{x.y},
-    ///     variable!(x) => 1.into(),
-    /// };
+    /// let mut env = HashMap::new();
+    /// env.insert(variable!(id), abs!{x.x});
+    /// env.insert(variable!(ad), abs!{x.y});
+    /// env.insert(variable!(x), 1.into());
+    ///
     /// assert_eq!(var!(q), var!(q).resolve(&env));
     /// assert_eq!(1u64, var!(x).resolve(&env).into());
     ///
