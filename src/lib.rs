@@ -398,6 +398,7 @@ mod tests {
     fn normalize_η() {
         assert_eq!(var!(f), abs!{x.app!(f,x)}.normalize(true));
         assert_eq!(abs!{x.app!(x,x)}, abs!{x.app!(x, x)}.normalize(true));
+        assert_eq!(abs!{f.f}, abs!{f.abs!{g.abs!{x.app!(app!(f,g),x)}}});
     }
 
     #[test]
