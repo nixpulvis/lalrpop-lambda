@@ -70,7 +70,7 @@ mod encode;
 ///
 /// assert!(parser.parse("λx.(x x)").is_ok());
 /// ```
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub enum Expression {
     Var(Variable),
     Abs(Abstraction),
@@ -84,7 +84,7 @@ pub enum Expression {
 ///
 /// assert!(parser.parse("x").is_ok());
 /// ```
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct Variable(pub String);
 
 /// An abstraction over a bound variable
@@ -94,7 +94,7 @@ pub struct Variable(pub String);
 ///
 /// assert!(parser.parse("λx.x").is_ok());
 /// ```
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct Abstraction(pub Variable, pub Box<Expression>);
 
 /// An application of two expressions
@@ -104,7 +104,7 @@ pub struct Abstraction(pub Variable, pub Box<Expression>);
 ///
 /// assert!(parser.parse("a b").is_ok());
 /// ```
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct Application(pub Box<Expression>, pub Box<Expression>);
 
 impl Expression {
@@ -316,25 +316,37 @@ impl Variable {
     }
 }
 
-impl fmt::Display for Expression {
+impl fmt::Debug for Expression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Expression::Var(id) => {
-                write!(f, "{}", id)
+                write!(f, "{:?}", id)
             },
             Expression::Abs(Abstraction(Variable(id), body)) => {
-                write!(f, "(λ{}.{})", id, body)
+                write!(f, "(λ{:?}.{:?})", id, body)
             },
             Expression::App(Application(box e1, box e2)) => {
-                write!(f, "({} {})", e1, e2)
+                write!(f, "({:?} {:?})", e1, e2)
             },
         }
     }
 }
 
-impl fmt::Display for Variable {
+impl fmt::Debug for Variable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl fmt::Display for Expression {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl fmt::Display for Variable {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
     }
 }
 
