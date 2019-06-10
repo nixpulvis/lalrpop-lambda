@@ -16,6 +16,7 @@ regex = "0.2.0"
 lalrpop = "0.17.0"
 
 [dev-dependencies]
+pretty_assertions = "0.6"
 criterion = "0.2"
 
 [[bench]]

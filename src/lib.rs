@@ -347,8 +347,9 @@ lalrpop_mod! {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use pretty_assertions::assert_eq;
     use crate::parse::ExpressionParser;
+    use super::*;
 
     #[test]
     fn variable() {
@@ -430,7 +431,6 @@ mod tests {
         let actual = app!(abs!{n.abs!{f.abs!{x.app!(f,app!(n,app!(f,x)))}}},
                           app!(abs!{n.abs!{f.abs!{x.app!(f,app!(n,app!(f,x)))}}},
                                abs!{f.abs!{x.x}}));
-        println!("{}: {} -> {}", expected, actual, actual.normalize(false));
         assert_eq!(expected, actual.normalize(false));
     }
 

@@ -55,6 +55,8 @@ impl From<fn(u64) -> u64> for Expression {
 
 #[cfg(test)]
 mod tests {
+    use pretty_assertions::assert_eq;
+
     #[test]
     fn var() {
         let one = abs!{f.abs!{x.app!(f,x)}};
