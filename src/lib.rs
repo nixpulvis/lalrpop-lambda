@@ -322,7 +322,7 @@ impl fmt::Debug for Expression {
             Expression::Var(id) => {
                 write!(f, "{:?}", id)
             },
-            Expression::Abs(Abstraction(Variable(id), body)) => {
+            Expression::Abs(Abstraction(id, body)) => {
                 write!(f, "(λ{:?}.{:?})", id, body)
             },
             Expression::App(Application(box e1, box e2)) => {
