@@ -7,10 +7,15 @@
   </head>
   <body>
     <div class="inputs">
-      <label>Input λ-expression</label>
-      <textarea id="lambda">λx.x</textarea>
+      <textarea id="input">λx.x</textarea>
     </div>
-    <pre><code id="norm"></code></pre>
+    <pre>
+-p: <code id="parse"></code>
+-&gt;: <code id="norm"></code>
+-η: <code id="eta"></code>
+=n: <code id="numeral"></code>
+=b: <code id="bool"></code>
+    </pre>
 
     <script src="./index.js"></script>
   </body>

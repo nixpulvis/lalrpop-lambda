@@ -6,11 +6,6 @@ body {
   display: block;
 }
 
-label {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
 textarea {
   border: 2px dashed black;
   color: black;

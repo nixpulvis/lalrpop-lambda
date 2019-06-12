@@ -1,19 +1,38 @@
 import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(lambda => {
-  function change() {
-    let input = document.getElementById('lambda');
-    let output = document.getElementById('norm');
+  let input = document.getElementById('input');
 
+  let parse_output = document.getElementById('parse');
+  let norm_output = document.getElementById('norm');
+  let eta_output = document.getElementById('eta');
+  let numeral_output = document.getElementById('numeral');
+  let bool_output = document.getElementById('bool');
+
+  function display([parse, norm, eta, numeral, bool]) {
+    parse_output.innerHTML = parse;
+    norm_output.innerHTML = norm;
+    eta_output.innerHTML = eta;
+    numeral_output.innerHTML = numeral;
+    bool_output.innerHTML = bool;
+  }
+
+  function change() {
     try {
-      var result = lambda.normalize(input.value);
-      output.className = null;
+      display([null, null, null, null, null]);
+      let exp = new lambda.Exp(input.value);
+      display([
+        exp,
+        exp.normalize(false),
+        exp.normalize(true),
+        exp.toNumber(),
+        exp.toBool(),
+      ]);
+      parse_output.className = null;
     } catch(e) {
-      var result = e;
-      output.className = "error";
-    } finally {
-      output.innerHTML = result;
+      parse_output.innerHTML = e;
+      parse_output.className = "error";
     }
   }
 
   change()
-  document.getElementById('lambda').addEventListener('keyup', change);;
+  document.getElementById('input').addEventListener('keyup', change);;
 });
