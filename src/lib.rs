@@ -50,6 +50,8 @@
 #[macro_use]
 extern crate lalrpop_util;
 
+extern crate wasm_bindgen;
+
 use std::collections::{HashSet, HashMap};
 use std::fmt;
 
@@ -62,6 +64,16 @@ mod macros;
 
 // Church encoded λ-calculus data types, and conversions to Rust data types
 mod encode;
+
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+pub fn normalize(expr: &str) -> Result<String, JsValue> {
+    let parser = parse::ExpressionParser::new();
+    match parser.parse(expr) {
+        Ok(e) => Ok(format!("{}", e.normalize(true))),
+        Err(e) => Err(JsValue::from_str(&format!("{}", e))),
+    }
+}
 
 /// A mutually recursive definition for all lambda expressions
 ///

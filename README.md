@@ -4,6 +4,10 @@
 [![Crates.io Version](https://img.shields.io/crates/v/lalrpop-lambda.svg?color=%238035b9)](https://crates.io/crates/lalrpop-lambda)
 [![docs.rs](https://img.shields.io/badge/docs.rs-0.x.x-lightgrey.svg)](https://docs.rs/lalrpop-lambda)
 
+![](extra/site-demo.gif)
+
+### Usage
+
 ```rust
 use lalrpop_lambda::lambda::ExpressionParser;
 let parser = ExpressionParser::new();
@@ -36,4 +40,20 @@ let ω = parser.parse(r"λx.(x x)");
 let Ω = parser.parse(r"(λx.(x x)) (λx.(x x))");
 let W = parser.parse(r"λf.λx. f x x");
 let Y = parser.parse(r"λf.(λx.f (x x)) (λx.f (x x))");
+```
+
+### Development
+
+This assumes you have an updated and working copy of [`rustup`][rustup].
+
+```sh
+cargo +nightly [build | test | bench | doc | run --example <>]
+```
+
+##### WASM
+
+First make sure you have `wasm-pack` installed. Then:
+
+```
+wasm-pack build
 ```

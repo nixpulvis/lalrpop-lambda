@@ -1,0 +1,33 @@
+body {
+  padding: 10px 20px;
+}
+
+.inputs * {
+  display: block;
+}
+
+label {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  border: 2px dashed black;
+  color: black;
+  font-size: 16px;
+  font-family: monospace;
+  height: 3in;
+  overflow: auto;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+pre code {
+  padding: 0 2px;
+  background: #ddd;
+  font-size: 16px;
+}
+
+pre code.error {
+  background: #f25;
+}
