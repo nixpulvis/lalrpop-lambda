@@ -144,4 +144,6 @@ mod tests {
     fn multiply() {
         assert_eq!(Expression::from(6), Expression::from(2) * Expression::from(3));
     }
+
+    // app!(n, (\f.\x.(f (f x)))) -> 2^n
 }

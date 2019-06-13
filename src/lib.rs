@@ -33,12 +33,6 @@
 //!     let id = parser.parse("λx.x").unwrap();
 //!     let id_one = id(Expression::from(1u64)).normalize(false);
 //!     assert_eq!(one, id_one);
-//!
-//!     // Use a parsed identity function with Rust `u64` numbers!
-//!     // NOTE: This is a WIP.
-//!     let id = parser.parse("λx.x").unwrap();
-//!     let u64_id = <fn(u64) -> u64>::from(id.clone());
-//!     assert_eq!(1, u64_id(1));
 //! }
 //! ```
 #![feature(non_ascii_idents,
@@ -50,8 +44,25 @@
 #[macro_use]
 extern crate lalrpop_util;
 
+#[cfg(feature = "wasm")]
+extern crate wasm_bindgen;
+
 use std::collections::{HashSet, HashMap};
 use std::fmt;
+
+/// WASM types for use in JS.
+///
+/// Once this module is compiled to WASM, it must be loaded. Read more about [Loading and running
+/// WebAssembly code](https://developer.mozilla.org/en-US/docs/WebAssembly/Loading_and_running).
+///
+/// ```js
+/// const module_path = "./node_modules/lalrpop-lambda/lalrpop_lambda.js";
+/// import(module_path).then(lambda => { ... });
+/// ```
+///
+/// See `examples/site` for more.
+#[cfg(feature = "wasm")]
+pub mod wasm;
 
 // The wonderful and easy to use `λ` and `abs!` macros.
 //

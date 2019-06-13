@@ -8,9 +8,17 @@ license = "MIT"
 edition = "2018"
 build = "build.rs"
 
+[features]
+default = ["wasm"]
+wasm = ["wasm-bindgen"]
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
 [dependencies]
 lalrpop-util = "0.17.0"
 regex = "0.2.0"
+wasm-bindgen = { version = "0.2", optional = true }
 
 [build-dependencies]
 lalrpop = "0.17.0"
