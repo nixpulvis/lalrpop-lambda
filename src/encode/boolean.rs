@@ -1,5 +1,6 @@
 use std::ops::{Not, BitAnd, BitOr, BitXor};
 use crate::{Expression, Abstraction};
+use crate::normal::Strategy;
 
 /// Church encoded booleans
 ///
@@ -33,7 +34,8 @@ impl From<bool> for Expression {
 /// ```
 impl From<Expression> for bool {
     fn from(e: Expression) -> bool {
-        if let Expression::Abs(Abstraction(a, box e1)) = e.normalize(true) {
+        let s = Strategy::Applicative(true);
+        if let Expression::Abs(Abstraction(a, box e1)) = e.normalize(&s) {
            if let Expression::Abs(Abstraction(_, box e2)) = e1 {
                if let Expression::Var(p) = e2 {
                    return p == a
@@ -71,7 +73,7 @@ impl Not for Expression {
 
     fn not(self) -> Self {
         let not_app = λ!{p.λ!{a.λ!{b.γ!(γ!(p,b),a)}}};
-        γ!({not_app},{self}).normalize(false)
+        γ!({not_app},{self}).normalize(&Strategy::Applicative(true))
     }
 }
 
@@ -94,7 +96,7 @@ impl BitOr for Expression {
 
     fn bitor(self, other: Self) -> Self {
         let or = λ!{p.λ!{q.γ!(γ!(p,p),q)}};
-        γ!(γ!({or},{self}),{other}).normalize(false)
+        γ!(γ!({or},{self}),{other}).normalize(&Strategy::Applicative(false))
     }
 }
 
@@ -117,7 +119,7 @@ impl BitAnd for Expression {
 
     fn bitand(self, other: Self) -> Self {
         let and = λ!{p.λ!{q.γ!(γ!(p,q),p)}};
-        γ!(γ!({and},{self}),{other}).normalize(false)
+        γ!(γ!({and},{self}),{other}).normalize(&Strategy::Applicative(false))
     }
 }
 
@@ -142,7 +144,7 @@ impl BitXor for Expression {
     fn bitxor(self, other: Self) -> Self {
         let not_app = λ!{p.λ!{a.λ!{b.γ!(γ!(p,b),a)}}};
         let xor = λ!{p.λ!{q.γ!(γ!(p,γ!({not_app},q)),q)}};
-        γ!(γ!({xor},{self}),{other}).normalize(false)
+        γ!(γ!({xor},{self}),{other}).normalize(&Strategy::Applicative(false))
     }
 }
 

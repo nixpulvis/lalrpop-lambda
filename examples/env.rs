@@ -4,13 +4,14 @@
 extern crate lalrpop_lambda;
 
 use std::collections::HashMap;
+use lalrpop_lambda::Strategy;
 
 macro_rules! resolve {
     ($expr:expr, $env:expr) => {
         println!("{} -r> {} -> {}",
                  $expr,
                  $expr.resolve($env),
-                 $expr.resolve($env).normalize(false));
+                 $expr.resolve($env).normalize(&Strategy::Applicative(false)));
     }
 }
 

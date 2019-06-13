@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use crate::{parse, Expression};
+use crate::normal::Strategy;
 
 /// A parsed λ-expression
 ///
@@ -42,8 +43,41 @@ impl Exp {
     /// let norm = new lambda.Exp("y y");
     /// console.log(`${norm} = ${expr.normalize(false)}`);
     /// ```
-    pub fn normalize(&self, η: bool) -> Self {
-        Exp(self.0.normalize(η))
+    pub fn normal(&self, η: bool) -> Self {
+        Exp(self.0.normalize(&Strategy::Applicative(η)))
+    }
+
+    /// See [`Expression::normalize`]
+    ///
+    /// ```js
+    /// let expr = new lambda.Exp("(\\x.x x) y");
+    /// let norm = new lambda.Exp("y y");
+    /// console.log(`${norm} = ${expr.normalize(false)}`);
+    /// ```
+    pub fn head_normal(&self, η: bool) -> Self {
+        Exp(self.0.normalize(&Strategy::HeadSpine(η)))
+    }
+
+    /// See [`Expression::normalize`]
+    ///
+    /// ```js
+    /// let expr = new lambda.Exp("(\\x.x x) y");
+    /// let norm = new lambda.Exp("y y");
+    /// console.log(`${norm} = ${expr.normalize(false)}`);
+    /// ```
+    pub fn weak_normal(&self) -> Self {
+        Exp(self.0.normalize(&Strategy::CallByValue))
+    }
+
+    /// See [`Expression::normalize`]
+    ///
+    /// ```js
+    /// let expr = new lambda.Exp("(\\x.x x) y");
+    /// let norm = new lambda.Exp("y y");
+    /// console.log(`${norm} = ${expr.normalize(false)}`);
+    /// ```
+    pub fn weak_head_normal(&self) -> Self {
+        Exp(self.0.normalize(&Strategy::CallByName))
     }
 
     /// See [`std::fmt::Display`]

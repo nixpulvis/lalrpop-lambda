@@ -1,36 +1,34 @@
 import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   let input = document.getElementById('input');
+  let output = document.getElementById('output');
 
-  let parse_output = document.getElementById('parse');
-  let norm_output = document.getElementById('norm');
-  let eta_output = document.getElementById('eta');
-  let numeral_output = document.getElementById('numeral');
-  let bool_output = document.getElementById('bool');
+  function display(text, lines) {
+    var content = "";
 
-  function display([parse, norm, eta, numeral, bool]) {
-    parse_output.innerHTML = parse;
-    norm_output.innerHTML = norm;
-    eta_output.innerHTML = eta;
-    numeral_output.innerHTML = numeral;
-    bool_output.innerHTML = bool;
+    for (let [key, value] of Object.entries(lines)) {
+      try {
+        let exp = new wasm.Exp(text);
+        content += `${key}: <code>${value(exp)}</code>\n`;
+      } catch(e) {
+        content += `${key}: <code class="error">${e}</code>\n`;
+        if (key == "-p ") {
+          break;
+        }
+      }
+    }
+    output.innerHTML = content;
   }
 
   function change() {
-    try {
-      display([null, null, null, null, null]);
-      let exp = new wasm.Exp(input.value);
-      display([
-        exp,
-        exp.normalize(false),
-        exp.normalize(true),
-        exp.toNumber(),
-        exp.toBool(),
-      ]);
-      parse_output.className = null;
-    } catch(e) {
-      parse_output.innerHTML = e;
-      parse_output.className = "error";
-    }
+    display(input.value, {
+      "-p ": (exp) => exp,
+      "-bv": (exp) => exp.weak_normal(),      // CallByValue
+      "-bn": (exp) => exp.weak_head_normal(), // CallByName
+      "-ao": (exp) => exp.normal(true),       // Applicative
+      "-he": (exp) => exp.head_normal(true),  // HeadSpine
+      "=n ": (exp) => exp.toNumber(),
+      "=b ": (exp) => exp.toBool(),
+    });
   }
 
   change()

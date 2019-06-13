@@ -1,5 +1,6 @@
 use std::ops::{Add, Mul};
 use crate::{Expression, Abstraction, Application, Variable};
+use crate::normal::Strategy;
 
 /// Church encoded natural numbers
 ///
@@ -20,7 +21,7 @@ impl From<u64> for Expression {
         let succ = λ!{n.λ!{f.λ!{x.γ!(f, γ!(γ!(n, f), x))}}};
         let mut e = λ!{f.λ!{x.x}};
         for _ in 0..n {
-            e = app!({&succ}, {&e}).normalize(false);
+            e = app!({&succ}, {&e}).normalize(&Strategy::Applicative(false));
         }
         e
     }
@@ -45,7 +46,7 @@ impl From<Expression> for u64 {
         // XXX: In fact more than ideal, this really should only be able to return an `Option<u64>`
         // since there are lambda terms which can evaluate to something which is not a chruch
         // encoded function.
-        match e.normalize(true) {
+        match e.normalize(&Strategy::Applicative(true)) {
             Expression::Var(id) => {
                 if id == variable!(f) { 1 } else { 0 }
             },
@@ -75,7 +76,7 @@ impl Add for Expression {
 
     fn add(self, other: Self) -> Self {
         let add = λ!{m.λ!{n.λ!{f.λ!{x.γ!(γ!(m,f),γ!(γ!(n,f),x))}}}};
-        γ!(γ!({add},{self}),{other}).normalize(false)
+        γ!(γ!({add},{self}),{other}).normalize(&Strategy::Applicative(false))
     }
 }
 
@@ -95,7 +96,7 @@ impl Mul for Expression {
 
     fn mul(self, other: Self) -> Self {
         let mul = λ!{m.λ!{n.λ!{f.λ!{x.γ!(γ!(m,γ!(n,f)),x)}}}};
-        γ!(γ!({mul},{self}),{other}).normalize(false)
+        γ!(γ!({mul},{self}),{other}).normalize(&Strategy::Applicative(false))
     }
 }
 

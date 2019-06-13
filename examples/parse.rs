@@ -1,7 +1,7 @@
 #![feature(non_ascii_idents)]
 extern crate lalrpop_lambda;
 
-use lalrpop_lambda::Expression;
+use lalrpop_lambda::{Expression, Strategy};
 use lalrpop_lambda::parse::ExpressionParser;
 
 macro_rules! parse {
@@ -9,7 +9,7 @@ macro_rules! parse {
         let e = ExpressionParser::new().parse($expr).unwrap();
         print!("{} parse-> {}", $expr, e);
         $(
-            let e = $func(&e, false);  // very funky.
+            let e = $func(&e, &Strategy::Applicative(false));  // very funky.
             print!(" -> {}", e);
         )?
         println!("");

@@ -3,6 +3,8 @@
 #[macro_use]
 extern crate lalrpop_lambda;
 
+use lalrpop_lambda::Strategy;
+
 fn main() {
     // Both the short `λ!` macro, as well as the ASCII `abs!` macro.
     println!("{} = {}", λ!{x.x}, abs!{x.x});
@@ -15,7 +17,7 @@ fn main() {
     // But this does ;)
     println!("app!({{&ω}},x): {} -> {}",
              app!({&ω},x),
-             app!({&ω},x).normalize(false));
+             app!({&ω},x).normalize(&Strategy::Applicative(false)));
 
     // An empty church numeral.
     let zero = λ!{f.λ!{x.x}};
@@ -29,11 +31,13 @@ fn main() {
     let id = λ!{x.x};
     println!("(id one): {} -> {}",
              app!({&id}, {&one}),
-             app!({&id}, {&one}).normalize(false));
+             app!({&id}, {&one}).normalize(&Strategy::Applicative(false)));
 
     let two = abs!{f.abs!{x.app!(var!(f),
                                  app!(app!(abs!{f.abs!{x.app!(var!(f),
                                                               var!(x))}},
                                            var!(f)),var!(x)))}};
-    println!("two: {} -> {}", two, two.normalize(false));
+    println!("two: {} -> {}",
+             two,
+             two.normalize(&Strategy::Applicative(false)));
 }
