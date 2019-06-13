@@ -1,4 +1,4 @@
-import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(lambda => {
+import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   let input = document.getElementById('input');
 
   let parse_output = document.getElementById('parse');
@@ -18,7 +18,7 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(lambda => {
   function change() {
     try {
       display([null, null, null, null, null]);
-      let exp = new lambda.Exp(input.value);
+      let exp = new wasm.Exp(input.value);
       display([
         exp,
         exp.normalize(false),

@@ -50,6 +50,20 @@ extern crate wasm_bindgen;
 use std::collections::{HashSet, HashMap};
 use std::fmt;
 
+/// WASM types for use in JS.
+///
+/// Once this module is compiled to WASM, it must be loaded. Read more about [Loading and running
+/// WebAssembly code](https://developer.mozilla.org/en-US/docs/WebAssembly/Loading_and_running).
+///
+/// ```js
+/// const module_path = "./node_modules/lalrpop-lambda/lalrpop_lambda.js";
+/// import(module_path).then(lambda => { ... });
+/// ```
+///
+/// See `examples/site` for more.
+#[cfg(feature = "wasm")]
+pub mod wasm;
+
 // The wonderful and easy to use `λ` and `abs!` macros.
 //
 // As well as an implementation of `set!` and `map!` taken from:
@@ -59,10 +73,6 @@ mod macros;
 
 // Church encoded λ-calculus data types, and conversions to Rust data types
 mod encode;
-
-// WASM / JS integration.
-#[cfg(feature = "wasm")]
-mod wasm;
 
 /// A mutually recursive definition for all lambda expressions
 ///

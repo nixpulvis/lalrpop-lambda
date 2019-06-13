@@ -9,6 +9,7 @@ edition = "2018"
 build = "build.rs"
 
 [features]
+default = ["wasm"]
 wasm = ["wasm-bindgen"]
 
 [lib]
