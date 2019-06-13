@@ -33,12 +33,6 @@
 //!     let id = parser.parse("λx.x").unwrap();
 //!     let id_one = id(Expression::from(1u64)).normalize(false);
 //!     assert_eq!(one, id_one);
-//!
-//!     // Use a parsed identity function with Rust `u64` numbers!
-//!     // NOTE: This is a WIP.
-//!     let id = parser.parse("λx.x").unwrap();
-//!     let u64_id = <fn(u64) -> u64>::from(id.clone());
-//!     assert_eq!(1, u64_id(1));
 //! }
 //! ```
 #![feature(non_ascii_idents,
@@ -50,6 +44,7 @@
 #[macro_use]
 extern crate lalrpop_util;
 
+#[cfg(feature = "wasm")]
 extern crate wasm_bindgen;
 
 use std::collections::{HashSet, HashMap};
@@ -65,39 +60,9 @@ mod macros;
 // Church encoded λ-calculus data types, and conversions to Rust data types
 mod encode;
 
-use wasm_bindgen::prelude::*;
-#[wasm_bindgen]
-pub struct Exp(Expression);
-#[wasm_bindgen]
-impl Exp {
-    #[wasm_bindgen(constructor)]
-    pub fn new(e: &str) -> Result<Exp, JsValue> {
-        let parser = parse::ExpressionParser::new();
-        match parser.parse(e) {
-            Ok(e) => Ok(Exp(e)),
-            Err(e) => Err(JsValue::from_str(&format!("{}", e))),
-        }
-    }
-
-    pub fn normalize(&self, η: bool) -> Self {
-        Exp(self.0.normalize(η))
-    }
-
-    #[wasm_bindgen(method, js_name = toString)]
-    pub fn to_string(&self) -> String {
-        format!("{}", self.0)
-    }
-
-    #[wasm_bindgen(method, js_name = toNumber)]
-    pub fn to_number(&self) -> usize {
-        u64::from(self.0.clone()) as usize
-    }
-
-    #[wasm_bindgen(method, js_name = toBool)]
-    pub fn to_bool(&self) -> bool {
-        bool::from(self.0.clone())
-    }
-}
+// WASM / JS integration.
+#[cfg(feature = "wasm")]
+mod wasm;
 
 /// A mutually recursive definition for all lambda expressions
 ///
