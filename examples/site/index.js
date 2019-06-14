@@ -26,10 +26,13 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   function change() {
     display(input.value, {
       "parse":           (exp) => exp,
-      "by value (WN)":   (exp) => exp.weak_normal(),
-      "by name (WHN)":   (exp) => exp.weak_head_normal(),
-      "head spine (HN)": (exp) => exp.head_normal(true),
-      "applicative (N)": (exp) => exp.normal(true),
+      "by value (WN)":   (exp) => exp.call_by_value(),
+      "applicative (N)": (exp) => exp.applicative(true),
+      // TODO: Hybrid by-value and applicative.
+      "by name (WHN)":   (exp) => exp.call_by_name(),
+      "normal (N)":      (exp) => exp.normal(true),
+      "head spine (HN)": (exp) => exp.head_spine(true),
+      // TODO: Hybrid head spine and normal.
 
       "= numeral": (exp) => exp.toNumber(),
       "= boolean": (exp) => exp.toBool(),

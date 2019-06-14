@@ -71,8 +71,7 @@ impl Expression {
             Expression::App(Application(box e1, box e2)) => {
                 match e1.bn() {
                     Expression::Abs(Abstraction(id, _, body)) => {
-                        // TODO: call e2.bn?
-                        body.substitute(&e2, &id)
+                        body.substitute(&e2, &id).bn()
                     },
                     e @ _ => {
                         Expression::App(Application(box e, box e2.clone()))
@@ -104,7 +103,7 @@ impl Expression {
             Expression::App(Application(box e1, box e2)) => {
                 match e1.bn() {
                     Expression::Abs(Abstraction(id, _, body)) => {
-                        body.substitute(&e2.no(η), &id)
+                        body.substitute(&e2, &id).no(η)
                     },
                     e @ _ => {
                         Expression::App(Application(box e.no(η), box e2.no(η)))

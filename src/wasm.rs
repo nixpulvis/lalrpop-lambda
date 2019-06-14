@@ -36,49 +36,27 @@ impl Exp {
         }
     }
 
-    /// See [`Expression::normalize`]
-    ///
-    /// ```js
-    /// let expr = new lambda.Exp("(\\x.x x) y");
-    /// let norm = new lambda.Exp("y y");
-    /// console.log(`${norm} = ${expr.normalize(false)}`);
-    /// ```
-    pub fn normal(&self, η: bool) -> Self {
+
+    pub fn applicative(&self, η: bool) -> Self {
         Exp(self.0.normalize(&Strategy::Applicative(η)))
     }
 
-    /// See [`Expression::normalize`]
-    ///
-    /// ```js
-    /// let expr = new lambda.Exp("(\\x.x x) y");
-    /// let norm = new lambda.Exp("y y");
-    /// console.log(`${norm} = ${expr.normalize(false)}`);
-    /// ```
-    pub fn head_normal(&self, η: bool) -> Self {
-        Exp(self.0.normalize(&Strategy::HeadSpine(η)))
-    }
-
-    /// See [`Expression::normalize`]
-    ///
-    /// ```js
-    /// let expr = new lambda.Exp("(\\x.x x) y");
-    /// let norm = new lambda.Exp("y y");
-    /// console.log(`${norm} = ${expr.normalize(false)}`);
-    /// ```
-    pub fn weak_normal(&self) -> Self {
+    pub fn call_by_value(&self) -> Self {
         Exp(self.0.normalize(&Strategy::CallByValue))
     }
 
-    /// See [`Expression::normalize`]
-    ///
-    /// ```js
-    /// let expr = new lambda.Exp("(\\x.x x) y");
-    /// let norm = new lambda.Exp("y y");
-    /// console.log(`${norm} = ${expr.normalize(false)}`);
-    /// ```
-    pub fn weak_head_normal(&self) -> Self {
+    pub fn normal(&self, η: bool) -> Self {
+        Exp(self.0.normalize(&Strategy::Normal(η)))
+    }
+
+    pub fn call_by_name(&self) -> Self {
         Exp(self.0.normalize(&Strategy::CallByName))
     }
+
+    pub fn head_spine(&self, η: bool) -> Self {
+        Exp(self.0.normalize(&Strategy::HeadSpine(η)))
+    }
+
 
     /// See [`std::fmt::Display`]
     ///
