@@ -17,12 +17,12 @@ textarea {
   margin-bottom: 5px;
 }
 
-pre code {
+code {
   padding: 0 2px;
   background: #ddd;
   font-size: 16px;
 }
 
-pre code.error {
+code.error {
   background: #f25;
 }

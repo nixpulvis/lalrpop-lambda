@@ -3,31 +3,35 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   let output = document.getElementById('output');
 
   function display(text, lines) {
-    var content = "";
-
+    var content = "<table>";
     for (let [key, value] of Object.entries(lines)) {
+      content += "<tr>";
+      content += `<th>${key}</th>`;
       try {
         let exp = new wasm.Exp(text);
-        content += `${key}: <code>${value(exp)}</code>\n`;
+        content += `<td><code>${value(exp)}</code></td>`;
       } catch(e) {
-        content += `${key}: <code class="error">${e}</code>\n`;
+        content += `<td><code class="error">${e}</code></td>`;
         if (key == "-p ") {
           break;
         }
       }
+      content += "</tr>";
     }
+    content += "</table>"
+
     output.innerHTML = content;
   }
 
   function change() {
     display(input.value, {
-      "-p ": (exp) => exp,
-      "-bv": (exp) => exp.weak_normal(),      // CallByValue
-      "-bn": (exp) => exp.weak_head_normal(), // CallByName
-      "-ao": (exp) => exp.normal(true),       // Applicative
-      "-he": (exp) => exp.head_normal(true),  // HeadSpine
-      "=n ": (exp) => exp.toNumber(),
-      "=b ": (exp) => exp.toBool(),
+      "parse":       (exp) => exp,
+      "by value":    (exp) => exp.weak_normal(),      // CallByValue
+      "by name":     (exp) => exp.weak_head_normal(), // CallByName
+      "applicative": (exp) => exp.normal(true),       // Applicative
+      "head spine":  (exp) => exp.head_normal(true),  // HeadSpine
+      "= numeral":   (exp) => exp.toNumber(),
+      "= boolean":   (exp) => exp.toBool(),
     });
   }
 
