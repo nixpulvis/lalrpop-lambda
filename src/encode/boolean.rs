@@ -35,8 +35,8 @@ impl From<bool> for Expression {
 impl From<Expression> for bool {
     fn from(e: Expression) -> bool {
         let s = Strategy::Applicative(true);
-        if let Expression::Abs(Abstraction(a, box e1)) = e.normalize(&s) {
-           if let Expression::Abs(Abstraction(_, box e2)) = e1 {
+        if let Expression::Abs(Abstraction(a, _, box e1)) = e.normalize(&s) {
+           if let Expression::Abs(Abstraction(_, _, box e2)) = e1 {
                if let Expression::Var(p) = e2 {
                    return p == a
                }

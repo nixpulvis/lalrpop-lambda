@@ -40,4 +40,7 @@ fn main() {
     println!("two: {} -> {}",
              two,
              two.normalize(&Strategy::Applicative(false)));
+
+    // Try out a type.
+    println!("{}", abs!{x:t.x});
 }

@@ -1,3 +1,14 @@
+/// A raw `Type`
+///
+/// ```
+/// ```
+#[macro_export]
+macro_rules! ty {
+    ($b:ident) => {{
+        $crate::Type(stringify!($b).into())
+    }};
+}
+
 /// A raw `Variable`
 ///
 /// ```
@@ -31,14 +42,28 @@ macro_rules! var {
 /// An abstraction (`Abs`) expression
 #[macro_export]
 macro_rules! abs {
+    {$arg:ident : $ty:ident . $body:ident} => {{
+        $crate::Expression::Abs(
+            $crate::Abstraction(variable!($arg),
+                                Some(ty!($ty)),
+                                box var!($body)))
+    }};
     {$arg:ident . $body:ident} => {{
         $crate::Expression::Abs(
             $crate::Abstraction(variable!($arg),
+                                None,
                                 box var!($body)))
+    }};
+    {$arg:ident : $ty:ident . $body:expr} => {{
+        $crate::Expression::Abs(
+            $crate::Abstraction(variable!($arg),
+                                Some(ty!($ty)),
+                                box $body.clone().into()))
     }};
     {$arg:ident . $body:expr} => {{
         $crate::Expression::Abs(
             $crate::Abstraction(variable!($arg),
+                                None,
                                 box $body.clone().into()))
     }};
 }
@@ -82,9 +107,15 @@ macro_rules! app {
 /// Just a shortcut for `abs!`.
 #[macro_export]
 macro_rules! λ {
+    {$arg:ident : $ty:ident . $body:ident} => {
+        abs!($arg . $body)
+    };
     {$arg:ident . $body:ident} => {
         abs!($arg . $body)
     };
+    {$arg:ident : $ty:ident . $body:expr} => {{
+        abs!($arg . $body)
+    }};
     {$arg:ident . $body:expr} => {{
         abs!($arg . $body)
     }};

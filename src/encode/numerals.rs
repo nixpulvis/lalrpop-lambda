@@ -50,7 +50,7 @@ impl From<Expression> for u64 {
             Expression::Var(id) => {
                 if id == variable!(f) { 1 } else { 0 }
             },
-            Expression::Abs(Abstraction(Variable(_id), box body)) => {
+            Expression::Abs(Abstraction(Variable(_id), _, box body)) => {
                 u64::from(body)
             },
             Expression::App(Application(box e1, box e2)) => {

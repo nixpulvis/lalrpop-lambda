@@ -1,6 +1,10 @@
-use crate::{Expression, Variable, Abstraction, Application};
+use crate::{Expression, Type, Variable, Abstraction, Application};
 
 grammar;
+
+pub Type: Type = r"[a-zA-Z0-9]+" => {
+    Type(<>.to_string())
+};
 
 pub Variable: Variable = r"[a-zA-Z0-9]+" => {
     Variable(<>.to_string())
@@ -12,9 +16,12 @@ pub Expression: Expression = {
 }
 
 Abstraction: Expression = {
+    Lambda <id:Variable> ":" <ty:Type> "." <term:Expression> => {
+        Expression::Abs(Abstraction(id, Some(ty), box term))
+    },
     Lambda <id:Variable> "." <term:Expression> => {
-        Expression::Abs(Abstraction(id, box term))
-    }
+        Expression::Abs(Abstraction(id, None, box term))
+    },
 }
 
 Application: Expression = {

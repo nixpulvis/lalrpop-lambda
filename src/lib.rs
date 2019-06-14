@@ -96,6 +96,13 @@ pub enum Expression {
     App(Application),
 }
 
+/// A type...
+///
+/// ```
+/// ```
+#[derive(Clone, Hash, PartialEq, Eq)]
+pub struct Type(pub String);
+
 /// A potentially free variable
 ///
 /// ```
@@ -114,7 +121,7 @@ pub struct Variable(pub String);
 /// assert!(parser.parse("λx.x").is_ok());
 /// ```
 #[derive(Clone, PartialEq, Eq)]
-pub struct Abstraction(pub Variable, pub Box<Expression>);
+pub struct Abstraction(pub Variable, pub Option<Type>, pub Box<Expression>);
 
 /// An application of two expressions
 ///
@@ -136,7 +143,7 @@ impl Expression {
     pub fn variables(&self) -> HashSet<Variable> {
         match self {
             Expression::Var(v) => set! { v.clone() },
-            Expression::Abs(Abstraction(id, body)) => {
+            Expression::Abs(Abstraction(id, _, body)) => {
                 body.variables().union(&set! { id.clone() }).cloned().collect()
             },
             Expression::App(Application(e1, e2)) => {
@@ -165,7 +172,7 @@ impl Expression {
             // FV(x) = { x }, where x is a variable.
             Expression::Var(id) => set! { id.clone() },
             // FV(λx.M) = FV(M) \ { x }.
-            Expression::Abs(Abstraction(id, body)) => {
+            Expression::Abs(Abstraction(id, _, body)) => {
                 body.free_variables()
                     .difference(&set! { id.clone() })
                     .cloned()
@@ -214,9 +221,10 @@ impl Expression {
                     self.clone()
                 }
             },
-            Expression::Abs(Abstraction(id, box body)) => {
+            Expression::Abs(Abstraction(id, ty, box body)) => {
                 // TODO: Check FV
                 Expression::Abs(Abstraction(id.clone(),
+                                            ty.clone(),
                                             box body.resolve(env)))
             },
             Expression::App(Application(box e1, box e2)) => {
@@ -232,13 +240,22 @@ impl fmt::Debug for Expression {
             Expression::Var(id) => {
                 write!(f, "{:?}", id)
             },
-            Expression::Abs(Abstraction(id, body)) => {
+            Expression::Abs(Abstraction(id, Some(ty), body)) => {
+                write!(f, "(λ{:?}:{:?}.{:?})", id, ty, body)
+            },
+            Expression::Abs(Abstraction(id, None, body)) => {
                 write!(f, "(λ{:?}.{:?})", id, body)
             },
             Expression::App(Application(box e1, box e2)) => {
                 write!(f, "({:?} {:?})", e1, e2)
             },
         }
+    }
+}
+
+impl fmt::Debug for Type {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
@@ -249,6 +266,12 @@ impl fmt::Debug for Variable {
 }
 
 impl fmt::Display for Expression {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl fmt::Display for Type {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
     }

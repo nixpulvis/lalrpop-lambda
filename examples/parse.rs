@@ -24,6 +24,9 @@ fn main() {
     parse!("x x");
     parse!("x y");
 
+    // A type!
+    parse!(r"\x:t.x x");
+
     println!();
     parse!(r"(\x.x) x", Expression::normalize);
     parse!(r"(\x.x) y", Expression::normalize);
