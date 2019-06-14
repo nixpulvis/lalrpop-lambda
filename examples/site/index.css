@@ -17,6 +17,10 @@ textarea {
   margin-bottom: 5px;
 }
 
+table {
+  border-spacing: 5px 0;
+}
+
 code {
   padding: 0 2px;
   background: #ddd;

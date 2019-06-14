@@ -2,18 +2,21 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   let input = document.getElementById('input');
   let output = document.getElementById('output');
 
-  function display(text, lines) {
+  function display(text, rows) {
     var content = "<table>";
-    for (let [key, value] of Object.entries(lines)) {
+    for (let row of rows) {
       content += "<tr>";
-      content += `<th>${key}</th>`;
-      try {
-        let exp = new wasm.Exp(text);
-        content += `<td><code>${value(exp)}</code></td>`;
-      } catch(e) {
-        content += `<td><code class="error">${e}</code></td>`;
-        if (key == "-p ") {
-          break;
+      for (let col of row) {
+        console.log(col);
+        if (typeof col === "function") {
+          try {
+            let exp = new wasm.Exp(text);
+            content += `<td><code>${col(exp)}</code></td>`;
+          } catch(e) {
+            content += `<td><code class="error">${e}</code></td>`;
+          }
+        } else {
+          content += `<th>${col}</th>`;
         }
       }
       content += "</tr>";
@@ -24,19 +27,20 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   }
 
   function change() {
-    display(input.value, {
-      "parse":           (exp) => exp,
-      "by value (WN)":   (exp) => exp.call_by_value(),
-      "applicative (N)": (exp) => exp.applicative(true),
+    display(input.value, [
+      ["parse",           (exp) => exp],
+      ["applicative (N)", (exp) => exp.applicative(true)],
+      ["by value (WN)",   (exp) => exp.call_by_value()],
+      ["normal (N)",      (exp) => exp.normal(true)],
+      ["by name (WHN)",   (exp) => exp.call_by_name()],
+
       // TODO: Hybrid by-value and applicative.
-      "by name (WHN)":   (exp) => exp.call_by_name(),
-      "normal (N)":      (exp) => exp.normal(true),
-      "head spine (HN)": (exp) => exp.head_spine(true),
+      // "head spine (HN)": (exp) => exp.head_spine(false),
       // TODO: Hybrid head spine and normal.
 
-      "= numeral": (exp) => exp.toNumber(),
-      "= boolean": (exp) => exp.toBool(),
-    });
+      ["= numeral", (exp) => exp.toNumber()],
+      ["= boolean", (exp) => exp.toBool()],
+    ]);
   }
 
   change()
