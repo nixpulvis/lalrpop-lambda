@@ -1,5 +1,6 @@
 use crate::{Expression, Abstraction, Application, Variable};
 
+/// A reduction strategy for an [`Expression`]
 pub enum Strategy {
     // Innermost reductions
 
