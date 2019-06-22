@@ -13,8 +13,12 @@ pub Expression: Expression = {
 }
 
 Abstraction: Expression = {
-    <ls:(Lambda)+> <ids:(Variable)*> <term:("." Expression)?> => {
-        Expression::build_abs(ls.len(), ids, term.map(|o| o.1))
+    <ls:(Lambda)+> <ids:(Variable)*> <term:("." Expression?)?> => {
+        let body = match term {
+            Some((_, o @ Some(_))) => o,
+            _ => None,
+        };
+        Expression::build_abs(ls.len(), ids, body)
     },
 }
 
