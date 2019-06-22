@@ -22,9 +22,17 @@ table {
 }
 
 code {
-  padding: 0 2px;
+  padding: 0 3px;
   background: #ddd;
   font-size: 16px;
+}
+
+p strong + code {
+  margin-left: 3px;
+}
+
+code.info {
+  background: #38b6ff;
 }
 
 code.error {

@@ -1,48 +1,95 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
-  let input = document.getElementById('input');
-  let output = document.getElementById('output');
-
-  function display(text, rows) {
-    var content = "<table>";
-    for (let row of rows) {
-      content += "<tr>";
-      for (let col of row) {
-        console.log(col);
-        if (typeof col === "function") {
-          try {
-            let exp = new wasm.Exp(text);
-            content += `<td><code>${col(exp)}</code></td>`;
-          } catch(e) {
-            content += `<td><code class="error">${e}</code></td>`;
-          }
-        } else {
-          content += `<th>${col}</th>`;
-        }
-      }
-      content += "</tr>";
+  class LambdaEditor extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { input: '', expression: null, error: null };
+      this.handleChange = this.handleChange.bind(this);
     }
-    content += "</table>"
 
-    output.innerHTML = content;
+    handleChange(event) {
+      let input = event.target.value;
+
+      try {
+        let expression = new wasm.Exp(input);
+        this.setState({ input, expression, error: null });
+      } catch(e) {
+        this.setState({ input, expression: null, error: e });
+      }
+    }
+
+    render() {
+      if (this.state.input === '') {
+        let message = "Input a valid λ-expression, e.g. \\x.x x";
+        var display = <p><code className="info">{message}</code></p>;
+      } else if (this.state.error) {
+        var display = <LambdaError message={this.state.error} />
+      } else {
+        var display = <LambdaOutputs exp={this.state.expression} />
+      }
+
+      return (
+        <div className="lambda">
+          <textarea onChange={this.handleChange}
+                    value={this.state.input}></textarea>
+          {display}
+        </div>
+      );
+    }
   }
 
-  function change() {
-    display(input.value, [
-      ["parse",           (exp) => exp],
-      ["applicative (N)", (exp) => exp.applicative(true)],
-      ["by value (WN)",   (exp) => exp.call_by_value()],
-      ["normal (N)",      (exp) => exp.normal(true)],
-      ["by name (WHN)",   (exp) => exp.call_by_name()],
-
-      // TODO: Hybrid by-value and applicative.
-      // "head spine (HN)": (exp) => exp.head_spine(false),
-      // TODO: Hybrid head spine and normal.
-
-      ["= numeral", (exp) => exp.toNumber()],
-      ["= boolean", (exp) => exp.toBool()],
-    ]);
+  class LambdaOutputs extends React.Component {
+    render() {
+      let exp = this.props.exp;
+      var outputs;
+      try {
+        outputs = [
+          { label: 'parse', value: exp ? exp.toString() : '' },
+          { label: 'app', value: exp ? exp.applicative(false).toString() : '' },
+          { label: 'cbv', value: exp ? exp.call_by_value().toString() : '' },
+          { label: 'norm', value: exp ? exp.normal(false).toString() : '' },
+          { label: 'cbn', value: exp ? exp.call_by_name().toString() : '' },
+          // TODO: Hybrid by-value and applicative.
+          { label: 'spine', value: exp ? exp.head_spine(false).toString() : '' },
+          // TODO: Hybrid head spine and normal.
+          { label: "= numeral", value: exp ? exp.toNumber().toString() : '' },
+          { label: "= bool", value: exp ? exp.toBool().toString() : '' },
+        ];
+      } catch(e) {
+        outputs = [];
+      }
+      return (
+        <div>
+          {outputs.map((o, i) => {
+            return (<LambdaOutput key={i}
+                                  label={o.label}
+                                  value={o.value} />);
+          })}
+        </div>
+      )
+    }
   }
 
-  change()
-  document.getElementById('input').addEventListener('keyup', change);;
+  class LambdaOutput extends React.Component {
+    render() {
+      return (
+        <p>
+          <strong>{this.props.label}:</strong>
+          <code>{this.props.value}</code>
+        </p>
+      );
+    }
+  }
+
+  class LambdaError extends React.Component {
+    render() {
+      return (
+        <p><code className="error">{this.props.message}</code></p>
+      )
+    }
+  }
+
+  ReactDOM.render(<LambdaEditor />, document.getElementById('mount'));
 });
