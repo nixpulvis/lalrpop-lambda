@@ -1,13 +1,10 @@
-use crate::{Expression, Type, Variable, Abstraction, Application};
+use crate::{Expression, Variable};
 
 grammar;
 
-pub Type: Type = r"[a-zA-Z0-9]+" => {
-    Type(<>.to_string())
-};
-
-pub Variable: Variable = r"[a-zA-Z0-9]+" => {
-    Variable(<>.to_string())
+pub Variable: Variable = {
+    Id => Variable(<>.to_string(), None),
+    <id:Id> ":" <ty:Id> => Variable(id, Some(ty)),
 };
 
 pub Expression: Expression = {
@@ -16,11 +13,8 @@ pub Expression: Expression = {
 }
 
 Abstraction: Expression = {
-    Lambda <id:Variable> ":" <ty:Type> "." <term:Expression> => {
-        Expression::Abs(Abstraction(id, Some(ty), box term))
-    },
-    Lambda <id:Variable> "." <term:Expression> => {
-        Expression::Abs(Abstraction(id, None, box term))
+    <ls:(Lambda)+> <ids:(Variable)*> <term:("." Expression)?> => {
+        Expression::build_abs(ls.len(), ids, term.map(|o| o.1))
     },
 }
 
@@ -29,7 +23,7 @@ Application: Expression = {
     // production to be left associative.
     Terminal => <>,
     <e1:Application> <e2:Terminal> => {
-        Expression::App(Application(box e1, box e2))
+        app!({e1},{e2})
     }
 }
 
@@ -42,3 +36,7 @@ Lambda = {
     "λ",
     "\\",
 }
+
+Id: String = r"[a-zA-Z0-9]+" => {
+    <>.to_string()
+};

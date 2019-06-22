@@ -13,7 +13,7 @@ fn main() {
     let ω = abs!{x.app!(x,x)};
     println!("ω: {}", ω);
     // Doesn't do what you might want.
-    println!("app!(x,ω): {}", app!(x,ω));
+    println!("app!(ω,x): {}", app!(ω,x));
     // But this does ;)
     println!("app!({{&ω}},x): {} -> {}",
              app!({&ω},x),
@@ -40,6 +40,10 @@ fn main() {
     println!("two: {} -> {}",
              two,
              two.normalize(&Strategy::Applicative(false)));
+
+    // Mmmmm, curry.
+    println!("{}", abs!{x y.app!(x,y)});
+    println!("{}", abs!{.abs!{.abs!{.var!("")}}});
 
     // Try out a type.
     println!("{}", abs!{x:t.x});

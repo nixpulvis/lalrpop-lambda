@@ -70,7 +70,7 @@ impl Expression {
         match self {
             Expression::App(Application(box e1, box e2)) => {
                 match e1.bn() {
-                    Expression::Abs(Abstraction(id, _, body)) => {
+                    Expression::Abs(Abstraction(id, body)) => {
                         body.substitute(&e2, &id).bn()
                     },
                     e @ _ => {
@@ -85,7 +85,7 @@ impl Expression {
     fn no(&self, η: bool) -> Self {
         match self {
             Expression::Var(_) => self.clone(),
-            Expression::Abs(Abstraction(id, ty, box body)) => {
+            Expression::Abs(Abstraction(id, box body)) => {
                 // η-reduction
                 if let Expression::App(Application(box e1,
                                                    box Expression::Var(x)))
@@ -97,12 +97,11 @@ impl Expression {
                 }
 
                 Expression::Abs(Abstraction(id.clone(),
-                                            ty.clone(),
                                             box body.no(η)))
             },
             Expression::App(Application(box e1, box e2)) => {
                 match e1.bn() {
-                    Expression::Abs(Abstraction(id, _, body)) => {
+                    Expression::Abs(Abstraction(id, body)) => {
                         body.substitute(&e2, &id).no(η)
                     },
                     e @ _ => {
@@ -117,7 +116,7 @@ impl Expression {
         match self {
             Expression::App(Application(box e1, box e2)) => {
                 match e1.bv() {
-                    Expression::Abs(Abstraction(id, _, body)) => {
+                    Expression::Abs(Abstraction(id, body)) => {
                         body.substitute(&e2.bv(), &id)
                     },
                     e @ _ => {
@@ -132,7 +131,7 @@ impl Expression {
     fn ao(&self, η: bool) -> Self {
         match self {
             Expression::Var(_) => self.clone(),
-            Expression::Abs(Abstraction(id, ty, box body)) => {
+            Expression::Abs(Abstraction(id, box body)) => {
                 // η-reduction
                 if let Expression::App(Application(box e1,
                                                    box Expression::Var(x)))
@@ -144,12 +143,11 @@ impl Expression {
                 }
 
                 Expression::Abs(Abstraction(id.clone(),
-                                            ty.clone(),
                                             box body.ao(η)))
             },
             Expression::App(Application(box e1, box e2)) => {
                 match e1.ao(η) {
-                    Expression::Abs(Abstraction(id, _, body)) => {
+                    Expression::Abs(Abstraction(id, body)) => {
                         body.substitute(&e2.ao(η), &id).ao(η)
                     },
                     e @ _ => {
@@ -174,13 +172,12 @@ impl Expression {
                 }
 
                 Expression::Abs(Abstraction(id.clone(),
-                                            ty.clone(),
-                                            box body.ao(η)))
+                                            box body.hs(η)))
             },
             Expression::App(Application(box e1, box e2)) => {
                 match e1.bn() {
-                    Expression::Abs(Abstraction(id, _, body)) => {
-                        body.substitute(&e2, &id).hs(η)
+                    Expression::Abs(Abstraction(id, body)) => {
+                        body.substitute(&e2, &id)
                     },
                     e @ _ => {
                         Expression::App(Application(box e, box e2.clone()))
@@ -194,16 +191,14 @@ impl Expression {
     /// self[x := v]
     fn substitute(&self, v: &Self, x: &Variable) -> Self {
         match self {
-            Expression::Abs(Abstraction(id, ty, box body)) => {
+            Expression::Abs(Abstraction(id, box body)) => {
                 if id == x || !v.free_variables().contains(id) {
                     Expression::Abs(Abstraction(id.clone(),
-                                                ty.clone(),
                                                 box body.substitute(v, x)))
                 } else {
-                    let fresh = Variable(format!("{}'", id));
+                    let fresh = Variable(format!("{}'", id), None);
                     let body = body.replace(&id, &fresh);
                     Expression::Abs(Abstraction(fresh,
-                                                ty.clone(),
                                                 box body.substitute(v, x)))
                 }
             },
@@ -222,9 +217,8 @@ impl Expression {
             Expression::Var(v) => {
                 Expression::Var(v.replace(old, new))
             },
-            Expression::Abs(Abstraction(id, ty, body)) => {
+            Expression::Abs(Abstraction(id, body)) => {
                 Expression::Abs(Abstraction(id.replace(old, new),
-                                            ty.clone(),
                                             box body.replace(old, new)))
             },
             Expression::App(Application(e1, e2)) => {
@@ -238,7 +232,7 @@ impl Expression {
 impl Variable {
     fn replace(&self, old: &Variable, new: &Variable) -> Self {
         if self.0 == old.0 {
-            Variable(new.0.clone())
+            Variable(new.0.clone(), new.1.clone())
         } else {
             self.clone()
         }
@@ -282,14 +276,14 @@ mod tests {
     fn normalize_capture_avoid() {
         let strategy = Strategy::Applicative(false);
 
-        let expected = Expression::Abs(Abstraction(variable!("y"), None,
-            box Expression::Abs(Abstraction(variable!("y'"), None,
+        let expected = Expression::Abs(Abstraction(variable!("y"),
+            box Expression::Abs(Abstraction(variable!("y'"),
                 box Expression::Var(variable!("y"))))));
         let actual = abs!{y.app!(abs!{x.abs!{y.x}}, y)};
         assert_eq!(expected, actual.normalize(&strategy));
 
         let expected = abs!{f.abs!{x.app!(var!(f),
-            Expression::Abs(Abstraction(variable!("x'"), None,
+            Expression::Abs(Abstraction(variable!("x'"),
                                         box app!(app!(var!(f),
                                                       var!(x)),
                                                  var!("x'")))))}};
@@ -297,17 +291,17 @@ mod tests {
                           abs!{f.abs!{x.app!(f, x)}});
         assert_eq!(expected, actual.normalize(&strategy));
 
-        let expected = Expression::Abs(Abstraction(variable!("x'"), None,
+        let expected = Expression::Abs(Abstraction(variable!("x'"),
                                                    box var!(x)));
         let actual = app!(abs!{f.abs!{x.app!(f,a)}}, abs!{a.x})
                         .normalize(&strategy);
         assert_eq!(expected, actual);
 
         let expected = abs!{f.abs!{x.app!(f,{
-            let x2 = Expression::Abs(Abstraction(variable!("x''"), None,
+            let x2 = Expression::Abs(Abstraction(variable!("x''"),
                                                  box var!("x''")));
             let fx = app!(app!(f,x),{x2});
-            Expression::Abs(Abstraction(variable!("x'"), None,
+            Expression::Abs(Abstraction(variable!("x'"),
                                         box fx))
         })}};
         let actual = app!(abs!{n.abs!{f.abs!{x.app!(f,app!(n,app!(f,x)))}}},

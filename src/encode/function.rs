@@ -26,7 +26,7 @@ impl<T> FnOnce<(T,)> for Expression
 impl From<Expression> for fn(u64) -> u64 {
     fn from(e: Expression) -> Self {
         match e {
-            Expression::Abs(Abstraction(ref lid, _, box ref e1)) => {
+            Expression::Abs(Abstraction(ref lid, box ref e1)) => {
                 match e1 {
                     Expression::Var(ref rid) if lid == rid => {
                         |x| x

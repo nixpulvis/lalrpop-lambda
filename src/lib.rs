@@ -96,13 +96,6 @@ pub enum Expression {
     App(Application),
 }
 
-/// A type...
-///
-/// ```
-/// ```
-#[derive(Clone, Hash, PartialEq, Eq)]
-pub struct Type(pub String);
-
 /// A potentially free variable
 ///
 /// ```
@@ -111,7 +104,7 @@ pub struct Type(pub String);
 /// assert!(parser.parse("x").is_ok());
 /// ```
 #[derive(Clone, Hash, PartialEq, Eq)]
-pub struct Variable(pub String);
+pub struct Variable(pub String, pub Option<String>);
 
 /// An abstraction over a bound variable
 ///
@@ -121,7 +114,7 @@ pub struct Variable(pub String);
 /// assert!(parser.parse("λx.x").is_ok());
 /// ```
 #[derive(Clone, PartialEq, Eq)]
-pub struct Abstraction(pub Variable, pub Option<Type>, pub Box<Expression>);
+pub struct Abstraction(pub Variable, pub Box<Expression>);
 
 /// An application of two expressions
 ///
@@ -143,7 +136,7 @@ impl Expression {
     pub fn variables(&self) -> HashSet<Variable> {
         match self {
             Expression::Var(v) => set! { v.clone() },
-            Expression::Abs(Abstraction(id, _, body)) => {
+            Expression::Abs(Abstraction(id, body)) => {
                 body.variables().union(&set! { id.clone() }).cloned().collect()
             },
             Expression::App(Application(e1, e2)) => {
@@ -172,7 +165,7 @@ impl Expression {
             // FV(x) = { x }, where x is a variable.
             Expression::Var(id) => set! { id.clone() },
             // FV(λx.M) = FV(M) \ { x }.
-            Expression::Abs(Abstraction(id, _, body)) => {
+            Expression::Abs(Abstraction(id, body)) => {
                 body.free_variables()
                     .difference(&set! { id.clone() })
                     .cloned()
@@ -221,10 +214,9 @@ impl Expression {
                     self.clone()
                 }
             },
-            Expression::Abs(Abstraction(id, ty, box body)) => {
+            Expression::Abs(Abstraction(id, box body)) => {
                 // TODO: Check FV
                 Expression::Abs(Abstraction(id.clone(),
-                                            ty.clone(),
                                             box body.resolve(env)))
             },
             Expression::App(Application(box e1, box e2)) => {
@@ -234,16 +226,42 @@ impl Expression {
     }
 }
 
+impl Expression {
+    pub fn build_abs(
+        lambs: usize,
+        ids: Vec<Variable>,
+        body: Option<Expression>
+    )
+        -> Self
+    {
+        // TODO: Make the body an Option too.
+        let mut abs = body.unwrap_or(var!(""));
+
+        let id_count = ids.len();
+        // Curry multi args.
+        for i in ids.into_iter().rev() {
+            abs = Expression::Abs(Abstraction(i, box abs));
+        }
+
+        // Wrap in as many extra lambdas as requested.
+        for l in 0..lambs {
+            // Skip the first lambda if given any ids, since the id will have
+            // already generated above.
+            if l == 0 && id_count > 0 { continue; }
+            abs = Expression::Abs(Abstraction(variable!(""), box abs));
+        }
+
+        abs
+    }
+}
+
 impl fmt::Debug for Expression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Expression::Var(id) => {
                 write!(f, "{:?}", id)
             },
-            Expression::Abs(Abstraction(id, Some(ty), body)) => {
-                write!(f, "(λ{:?}:{:?}.{:?})", id, ty, body)
-            },
-            Expression::Abs(Abstraction(id, None, body)) => {
+            Expression::Abs(Abstraction(id, body)) => {
                 write!(f, "(λ{:?}.{:?})", id, body)
             },
             Expression::App(Application(box e1, box e2)) => {
@@ -253,25 +271,17 @@ impl fmt::Debug for Expression {
     }
 }
 
-impl fmt::Debug for Type {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
 impl fmt::Debug for Variable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
+        if let Some(ty) = &self.1 {
+            write!(f, "{}:{}", self.0, ty)
+        } else {
+            write!(f, "{}", self.0)
+        }
     }
 }
 
 impl fmt::Display for Expression {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
-
-impl fmt::Display for Type {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
     }

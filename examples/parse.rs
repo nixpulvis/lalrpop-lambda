@@ -28,6 +28,12 @@ fn main() {
     parse!(r"\x:t.x x");
 
     println!();
+    parse!(r"\\\x y.x y");
+    parse!(r"\x y.x y");
+    parse!(r"\\\");
+    println!();
+
+    println!();
     parse!(r"(\x.x) x", Expression::normalize);
     parse!(r"(\x.x) y", Expression::normalize);
 

@@ -1,14 +1,3 @@
-/// A raw `Type`
-///
-/// ```
-/// ```
-#[macro_export]
-macro_rules! ty {
-    ($b:ident) => {{
-        $crate::Type(stringify!($b).into())
-    }};
-}
-
 /// A raw `Variable`
 ///
 /// ```
@@ -21,11 +10,17 @@ macro_rules! ty {
 #[macro_export]
 macro_rules! variable {
     ($b:ident) => {{
-        $crate::Variable(stringify!($b).into())
+        $crate::Variable(stringify!($b).into(), None)
     }};
     ($b:expr) => {{
-        $crate::Variable($b.into())
-    }}
+        $crate::Variable($b.into(), None)
+    }};
+    ($b:ident, $ty:ident) => {{
+        $crate::Variable(stringify!($b).into(), Some(stringify!($ty).into()))
+    }};
+    ($b:expr, $ty:ident) => {{
+        $crate::Variable($b.into(), Some(stringify!($ty).into()))
+    }};
 }
 
 /// A variable (`Var`) expression
@@ -42,29 +37,31 @@ macro_rules! var {
 /// An abstraction (`Abs`) expression
 #[macro_export]
 macro_rules! abs {
-    {$arg:ident : $ty:ident . $body:ident} => {{
-        $crate::Expression::Abs(
-            $crate::Abstraction(variable!($arg),
-                                Some(ty!($ty)),
-                                box var!($body)))
+    {. $body:ident} => {{
+        $crate::Expression::build_abs(1, vec![], Some(var!($body)))
     }};
-    {$arg:ident . $body:ident} => {{
-        $crate::Expression::Abs(
-            $crate::Abstraction(variable!($arg),
-                                None,
-                                box var!($body)))
+    {. $body:expr} => {{
+        $crate::Expression::build_abs(1, vec![], Some($body.into()))
     }};
-    {$arg:ident : $ty:ident . $body:expr} => {{
-        $crate::Expression::Abs(
-            $crate::Abstraction(variable!($arg),
-                                Some(ty!($ty)),
-                                box $body.clone().into()))
+    {$($arg:ident : $ty:ident)* . $body:ident} => {{
+        let mut ids: Vec<$crate::Variable> = Vec::new();
+        $(ids.push(variable!($arg, $ty));)*
+        $crate::Expression::build_abs(1, ids, Some(var!($body)))
     }};
-    {$arg:ident . $body:expr} => {{
-        $crate::Expression::Abs(
-            $crate::Abstraction(variable!($arg),
-                                None,
-                                box $body.clone().into()))
+    {$($arg:ident)* . $body:ident} => {{
+        let mut ids: Vec<$crate::Variable> = Vec::new();
+        $(ids.push(variable!($arg));)*
+        $crate::Expression::build_abs(1, ids, Some(var!($body)))
+    }};
+    {$($arg:ident : $ty:ident)* . $body:expr} => {{
+        let mut ids: Vec<$crate::Variable> = Vec::new();
+        $(ids.push(variable!($arg, $ty));)*
+        $crate::Expression::build_abs(1, ids, Some($body.into()))
+    }};
+    {$($arg:ident)* . $body:expr} => {{
+        let mut ids: Vec<$crate::Variable> = Vec::new();
+        $(ids.push(variable!($arg));)*
+        $crate::Expression::build_abs(1, ids, Some($body.into()))
     }};
 }
 
@@ -107,17 +104,23 @@ macro_rules! app {
 /// Just a shortcut for `abs!`.
 #[macro_export]
 macro_rules! λ {
-    {$arg:ident : $ty:ident . $body:ident} => {
-        abs!($arg . $body)
+    {. $body:ident} => {
+        abs!($body)
     };
-    {$arg:ident . $body:ident} => {
-        abs!($arg . $body)
+    {. $body:expr} => {
+        abs!($body)
     };
-    {$arg:ident : $ty:ident . $body:expr} => {{
-        abs!($arg . $body)
+    {$($arg:ident)* : $ty:ident . $body:ident} => {
+        abs!($($arg)* . $body)
+    };
+    {$($arg:ident)* . $body:ident} => {
+        abs!($($arg)* . $body)
+    };
+    {$($arg:ident)* : $ty:ident . $body:expr} => {{
+        abs!($($arg)* . $body)
     }};
-    {$arg:ident . $body:expr} => {{
-        abs!($arg . $body)
+    {$($arg:ident)* . $body:expr} => {{
+        abs!($($arg)* . $body)
     }};
 }
 
