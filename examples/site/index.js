@@ -22,8 +22,12 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
 
     render() {
       if (this.state.input === '') {
-        let message = "Input a valid λ-expression, e.g. \\x.x x";
-        var display = <p><code className="info">{message}</code></p>;
+        var display = (
+          <p>
+            <strong>Input a valid λ-expression, e.g.</strong>
+            <code>\x.x x</code>
+          </p>
+        );
       } else if (this.state.error) {
         var display = <LambdaError message={this.state.error} />
       } else {
@@ -61,13 +65,13 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
         outputs = [];
       }
       return (
-        <div>
+        <table>
           {outputs.map((o, i) => {
             return (<LambdaOutput key={i}
                                   label={o.label}
                                   value={o.value} />);
           })}
-        </div>
+        </table>
       )
     }
   }
@@ -75,10 +79,10 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   class LambdaOutput extends React.Component {
     render() {
       return (
-        <p>
-          <strong>{this.props.label}:</strong>
-          <code>{this.props.value}</code>
-        </p>
+        <tr>
+          <th>{this.props.label}</th>
+          <td><code>{this.props.value}</code></td>
+        </tr>
       );
     }
   }
@@ -86,7 +90,9 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   class LambdaError extends React.Component {
     render() {
       return (
-        <p><code className="error">{this.props.message}</code></p>
+        <p>
+          <code className="error">{this.props.message}</code>
+        </p>
       )
     }
   }

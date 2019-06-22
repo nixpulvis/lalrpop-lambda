@@ -31,10 +31,6 @@ p strong + code {
   margin-left: 3px;
 }
 
-code.info {
-  background: #38b6ff;
-}
-
 code.error {
   background: #f25;
 }
