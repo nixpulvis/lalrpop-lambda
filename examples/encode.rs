@@ -18,4 +18,14 @@ fn main() {
     let ln = Expression::from(n);
     let nn = u64::from(ln.clone());
     println!("{} -> {} -> {}", n, ln, nn);
+
+    let t = true;
+    let lt = Expression::from(t);
+    let tt = bool::from(lt.clone());
+    println!("{} -> {} -> {}", t, lt, tt);
+
+    let f = false;
+    let lf = Expression::from(f);
+    let ff = bool::from(lf.clone());
+    println!("{} -> {} -> {}", f, lf, ff);
 }
