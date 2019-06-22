@@ -41,6 +41,6 @@ Lambda = {
     "\\",
 }
 
-Id: String = r"[a-zA-Z0-9]+" => {
+Id: String = r"[a-zA-Z0-9-_]+" => {
     <>.to_string()
 };
