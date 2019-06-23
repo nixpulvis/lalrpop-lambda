@@ -1,3 +1,24 @@
+//! WASM types for use in JS.
+//!
+//! In addition to the Rust [crate][TODO], the WASM package is published to NPM
+//! as well. If you are only interested in using this library from JS, this should
+//! be all you need.
+//!
+//! ### Install
+//!
+//! ```sh
+//! npm install lalrpop-lambda [--save]
+//! ```
+//!
+//! Once this module is compiled to WASM, it must be loaded. Read more about [Loading and running
+//! WebAssembly code](https://developer.mozilla.org/en-US/docs/WebAssembly/Loading_and_running).
+//!
+//! ```js
+//! const module_path = "./node_modules/lalrpop-lambda/lalrpop_lambda.js";
+//! import(module_path).then(lambda => { ... });
+//! ```
+//!
+//! See `examples/site` for more.
 use wasm_bindgen::prelude::*;
 use crate::{parse, Expression};
 use crate::normal::Strategy;
