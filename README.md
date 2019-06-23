@@ -35,6 +35,8 @@ use this library (each interchangeable with another):
 
 ![](extra/site-demo.gif)
 
+The above is generated with `wasm-pack`, see [example/site][example/site].
+
 ### Usage (Rust)
 
 ```toml
@@ -68,4 +70,5 @@ First make sure you have `wasm-pack` installed. Then:
 wasm-pack build
 ```
 
+[example/site]: https://github.com/nixpulvis/lalrpop-lambda/blob/master/examples/site/index.js
 [lalrpop_lambda-wasm]: https://docs.rs/lalrpop-lambda/latest/lalrpop_lambda/wasm/index.html
