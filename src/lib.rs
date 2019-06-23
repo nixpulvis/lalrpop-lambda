@@ -154,7 +154,7 @@ impl Expression {
     /// let parser = lalrpop_lambda::parse::ExpressionParser::new();
     ///
     /// let mut free = HashSet::new();
-    /// free.insert(Variable("y".into()));
+    /// free.insert(Variable("y".into(), None));
     ///
     /// let expression = parser.parse("λx.(x y)").unwrap();
     ///

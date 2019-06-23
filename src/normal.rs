@@ -160,7 +160,7 @@ impl Expression {
 
     fn hs(&self, η: bool) -> Self {
         match self {
-            Expression::Abs(Abstraction(id, ty, box body)) => {
+            Expression::Abs(Abstraction(id, box body)) => {
                 // η-reduction
                 if let Expression::App(Application(box e1,
                                                    box Expression::Var(x)))
