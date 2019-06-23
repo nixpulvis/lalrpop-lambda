@@ -3,7 +3,7 @@ use crate::{Expression, Variable};
 grammar;
 
 pub Variable: Variable = {
-    Id => Variable(<>.to_string(), None),
+    Id                  => Variable(<>, None),
     <id:Id> ":" <ty:Id> => Variable(id, Some(ty)),
 };
 
@@ -26,9 +26,7 @@ Application: Expression = {
     // NOTE: Base case of terminals is here to allow the `Application`
     // production to be left associative.
     Terminal => <>,
-    <e1:Application> <e2:Terminal> => {
-        app!({e1},{e2})
-    }
+    <e1:Application> <e2:Terminal> => app!({e1},{e2}),
 }
 
 Terminal: Expression = {
