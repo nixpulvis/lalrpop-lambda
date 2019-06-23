@@ -47,16 +47,16 @@ import("./node_modules/lalrpop-lambda/lalrpop_lambda.js").then(wasm => {
   class LambdaOutputs extends React.Component {
     render() {
       let outputs = [
-        { label: 'parse', func: 'toString' },
-        { label: 'app',   func: 'applicative' },
-        { label: 'cbv',   func: 'call_by_value' },
-        { label: 'norm',  func: 'normal' },
-        { label: 'cbn',   func: 'call_by_name' },
+        { label: 'parse',    func: 'toString' },
+        { label: 'app ->',   func: 'applicative' },
+        { label: 'cbv ->',   func: 'call_by_value' },
+        { label: 'norm ->',  func: 'normal' },
+        { label: 'cbn ->',   func: 'call_by_name' },
         // TODO: Hybrid by-func and applicative.
-        { label: 'spine', func: 'head_spine' },
+        { label: 'spine ->', func: 'head_spine' },
         // TODO: Hybrid head spine and normal.
-        { label: "= numeral", func: 'toNumber' },
-        { label: "= bool",    func: 'toBool' },
+        { label: "numeral =", func: 'toNumber' },
+        { label: "bool =",    func: 'toBool' },
       ];
       return (
         <table>

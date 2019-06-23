@@ -21,6 +21,10 @@ table {
   border-spacing: 5px 0;
 }
 
+table th {
+  text-align: right;
+}
+
 code {
   padding: 0 3px;
   background: #ddd;
