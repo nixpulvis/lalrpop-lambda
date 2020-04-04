@@ -16,16 +16,16 @@ wasm = ["wasm-bindgen"]
 crate-type = ["rlib", "cdylib"]
 
 [dependencies]
-lalrpop-util = "*"
-regex = "*"
-wasm-bindgen = { version = "*", optional = true }
+lalrpop-util = "0.18.1"
+regex = "1.3.6"
+wasm-bindgen = { version = "0.2.60", optional = true }
+pretty_assertions = "0.6.1"
 
 [build-dependencies]
-lalrpop = "*"
+lalrpop = { version = "0.18.1", features = ["lexer"] }
 
 [dev-dependencies]
-pretty_assertions = "*"
-criterion = "*"
+criterion = "0.3.1"
 
 [[bench]]
 name = "numerals"

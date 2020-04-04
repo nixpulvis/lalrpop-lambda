@@ -51,6 +51,9 @@ extern crate lalrpop_util;
 #[cfg(feature = "wasm")]
 extern crate wasm_bindgen;
 
+#[cfg(test)]
+extern crate pretty_assertions;
+
 use std::collections::{HashSet, HashMap};
 use std::fmt;
 
