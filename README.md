@@ -10,28 +10,28 @@ use this library (each interchangeable with another):
 - `Expression` AST variants `Abs`, `App`, and `Var`
 - Macros `abs!`/`λ!`, `app!`/`γ!`, and `var!`
 
-    ```rust
-    let id = λ!{x.x};
-    let one = λ!{f.λ!{x.γ!(f,x)}};
-    assert_eq!(1u64, u64::from(app!({id},{one})));
-    ```
+  ```rust
+  let id = λ!{x.x};
+  let one = λ!{f.λ!{x.γ!(f,x)}};
+  assert_eq!(1u64, u64::from(app!({id},{one})));
+  ```
 
 - Parsed λ-calculus strings
 
-    ```rust
-    let parser = ExpressionParser::new();
-    parser.parse(r"\a b.a");
-    parser.parse(r"\f x.(f (f x))");
-    parser.parse(r"\\\x y z");
-    ```
+  ```rust
+  let parser = ExpressionParser::new();
+  parser.parse(r"\a b.a");
+  parser.parse(r"\f x.(f (f x))");
+  parser.parse(r"\\\x y z");
+  ```
 
 - Native types: `u64`, `bool`, `fn` (WIP)
 
-    ```rust
-    assert_eq!(λ!{f.λ!{x.γ!(f,γ!(f,x))}}, Expression::from(2u64));
-    assert_eq!(true, bool::from(λ!{a.λ!{b.a}}));
-    assert_eq!(1, λ!{x.x}(1));
-    ```
+  ```rust
+  assert_eq!(λ!{f.λ!{x.γ!(f,γ!(f,x))}}, Expression::from(2u64));
+  assert_eq!(true, bool::from(λ!{a.λ!{b.a}}));
+  assert_eq!(1, λ!{x.x}(1));
+  ```
 
 ![](extra/site-demo.gif)
 
@@ -68,6 +68,8 @@ First make sure you have `wasm-pack` installed. Then:
 
 ```
 wasm-pack build
+cd examples/site
+npm run serve
 ```
 
 [example/site]: https://github.com/nixpulvis/lalrpop-lambda/blob/master/examples/site/index.js
