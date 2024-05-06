@@ -39,11 +39,7 @@
 //!     assert_eq!(one, id_one);
 //! }
 //! ```
-#![feature(non_ascii_idents,
-           box_syntax,
-           box_patterns,
-           fn_traits,
-           unboxed_closures)]
+#![feature(non_ascii_idents, box_patterns, fn_traits, unboxed_closures)]
 
 #[macro_use]
 extern crate lalrpop_util;
@@ -54,7 +50,7 @@ extern crate wasm_bindgen;
 #[cfg(test)]
 extern crate pretty_assertions;
 
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 
 #[cfg(feature = "wasm")]
@@ -128,9 +124,11 @@ impl Expression {
     pub fn variables(&self) -> HashSet<Variable> {
         match self {
             Expression::Var(v) => set! { v.clone() },
-            Expression::Abs(Abstraction(id, body)) => {
-                body.variables().union(&set! { id.clone() }).cloned().collect()
-            },
+            Expression::Abs(Abstraction(id, body)) => body
+                .variables()
+                .union(&set! { id.clone() })
+                .cloned()
+                .collect(),
             Expression::App(Application(e1, e2)) => {
                 e1.variables().union(&e2.variables()).cloned().collect()
             }
@@ -157,19 +155,17 @@ impl Expression {
             // FV(x) = { x }, where x is a variable.
             Expression::Var(id) => set! { id.clone() },
             // FV(λx.M) = FV(M) \ { x }.
-            Expression::Abs(Abstraction(id, body)) => {
-                body.free_variables()
-                    .difference(&set! { id.clone() })
-                    .cloned()
-                    .collect()
-            },
+            Expression::Abs(Abstraction(id, body)) => body
+                .free_variables()
+                .difference(&set! { id.clone() })
+                .cloned()
+                .collect(),
             // FV(M N) = FV(M) ∪ FV(N).
-            Expression::App(Application(e1, e2)) => {
-                e1.free_variables()
-                  .union(&e2.free_variables())
-                  .cloned()
-                  .collect()
-            }
+            Expression::App(Application(e1, e2)) => e1
+                .free_variables()
+                .union(&e2.free_variables())
+                .cloned()
+                .collect(),
         }
     }
 
@@ -196,8 +192,7 @@ impl Expression {
     /// assert_eq!(u64::from(var!(y)), ad(1));
     /// # }
     /// ```
-    pub fn resolve(&self, env: &HashMap<Variable,Expression>) -> Expression
-    {
+    pub fn resolve(&self, env: &HashMap<Variable, Expression>) -> Expression {
         match self {
             Expression::Var(id) => {
                 if let Some(e) = env.get(id) {
@@ -205,42 +200,37 @@ impl Expression {
                 } else {
                     self.clone()
                 }
-            },
+            }
             Expression::Abs(Abstraction(id, box body)) => {
                 // TODO: Check FV
-                Expression::Abs(Abstraction(id.clone(),
-                                            box body.resolve(env)))
-            },
+                Expression::Abs(Abstraction(id.clone(), Box::new(body.resolve(env))))
+            }
             Expression::App(Application(box e1, box e2)) => {
-                app!({e1.resolve(env)}, {e2.resolve(env)})
-            },
+                app!({ e1.resolve(env) }, { e2.resolve(env) })
+            }
         }
     }
 }
 
 impl Expression {
-    pub fn build_abs(
-        lambs: usize,
-        ids: Vec<Variable>,
-        body: Option<Expression>
-    )
-        -> Self
-    {
+    pub fn build_abs(lambs: usize, ids: Vec<Variable>, body: Option<Expression>) -> Self {
         // TODO: Make the body an Option too.
         let mut abs = body.unwrap_or(var!(""));
 
         let id_count = ids.len();
         // Curry multi args.
         for i in ids.into_iter().rev() {
-            abs = Expression::Abs(Abstraction(i, box abs));
+            abs = Expression::Abs(Abstraction(i, Box::new(abs)));
         }
 
         // Wrap in as many extra lambdas as requested.
         for l in 0..lambs {
             // Skip the first lambda if given any ids, since the id will have
             // already generated above.
-            if l == 0 && id_count > 0 { continue; }
-            abs = Expression::Abs(Abstraction(variable!(""), box abs));
+            if l == 0 && id_count > 0 {
+                continue;
+            }
+            abs = Expression::Abs(Abstraction(variable!(""), Box::new(abs)));
         }
 
         abs
@@ -252,13 +242,13 @@ impl fmt::Debug for Expression {
         match self {
             Expression::Var(id) => {
                 write!(f, "{:?}", id)
-            },
+            }
             Expression::Abs(Abstraction(id, body)) => {
                 write!(f, "(λ{:?}.{:?})", id, body)
-            },
+            }
             Expression::App(Application(box e1, box e2)) => {
                 write!(f, "({:?} {:?})", e1, e2)
-            },
+            }
         }
     }
 }
@@ -285,18 +275,16 @@ impl fmt::Display for Variable {
     }
 }
 
-
 lalrpop_mod! {
     /// Parse λ-expressions
     pub parse
 }
 
-
 #[cfg(test)]
 mod tests {
-    use pretty_assertions::assert_eq;
-    use crate::parse::ExpressionParser;
     use super::*;
+    use crate::parse::ExpressionParser;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn variable() {
@@ -330,14 +318,22 @@ mod tests {
     fn free_variables() {
         let parser = ExpressionParser::new();
 
-        assert_eq!(set! { variable!(x) },
-                   parser.parse(r"x").unwrap().free_variables());
-        assert_eq!(set! { },
-                   parser.parse(r"λx.x").unwrap().free_variables());
-        assert_eq!(set! { variable!(f), variable!(x) },
-                   parser.parse(r"f x").unwrap().free_variables());
-        assert_eq!(set! { variable!(x), variable!(y) },
-                   parser.parse(r"(λx.(x y)) (λy.(x y))").unwrap().free_variables());
+        assert_eq!(
+            set! { variable!(x) },
+            parser.parse(r"x").unwrap().free_variables()
+        );
+        assert_eq!(set! {}, parser.parse(r"λx.x").unwrap().free_variables());
+        assert_eq!(
+            set! { variable!(f), variable!(x) },
+            parser.parse(r"f x").unwrap().free_variables()
+        );
+        assert_eq!(
+            set! { variable!(x), variable!(y) },
+            parser
+                .parse(r"(λx.(x y)) (λy.(x y))")
+                .unwrap()
+                .free_variables()
+        );
     }
 
     #[test]

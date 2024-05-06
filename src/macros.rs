@@ -31,7 +31,7 @@ macro_rules! var {
     }};
     ($b:expr) => {{
         $crate::Expression::Var(variable!($b))
-    }}
+    }};
 }
 
 /// An abstraction (`Abs`) expression
@@ -69,24 +69,28 @@ macro_rules! abs {
 #[macro_export]
 macro_rules! app {
     ($func:ident, $arg:ident) => {{
-        $crate::Expression::App(
-            $crate::Application(box var!($func),
-                                box var!($arg)))
+        $crate::Expression::App($crate::Application(
+            Box::new(var!($func)),
+            Box::new(var!($arg)),
+        ))
     }};
     ($func:ident, $arg:expr) => {{
-        $crate::Expression::App(
-            $crate::Application(box var!($func),
-                                box $arg.clone().into()))
+        $crate::Expression::App($crate::Application(
+            Box::new(var!($func)),
+            Box::new($arg.clone().into()),
+        ))
     }};
     ($func:expr, $arg:ident) => {{
-        $crate::Expression::App(
-            $crate::Application(box $func.clone().into(),
-                                box var!($arg)))
+        $crate::Expression::App($crate::Application(
+            Box::new($func.clone().into()),
+            Box::new(var!($arg)),
+        ))
     }};
     ($func:expr, $arg:expr) => {{
-        $crate::Expression::App(
-            $crate::Application(box $func.clone().into(),
-                                box $arg.clone().into()))
+        $crate::Expression::App($crate::Application(
+            Box::new($func.clone().into()),
+            Box::new($arg.clone().into()),
+        ))
     }};
 }
 
